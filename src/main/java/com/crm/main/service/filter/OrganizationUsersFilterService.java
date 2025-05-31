@@ -13,8 +13,6 @@ import com.crm.sharedlib.dto.request.UserWithRolesFilterRequest;
 import com.crm.sharedlib.dto.response.UserAndRoles;
 import com.crm.sharedlib.dto.response.UserWithRoleResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,45 +39,37 @@ public class OrganizationUsersFilterService {
             UserAndRolesFilterRequest request
     ) {
 
-        Page<OrganizationUser> usersInOrganization;
+        List<OrganizationUser> usersInOrganization;
 
         if (nonNull(request.getRolesId()) && !request.getRolesId().isEmpty()) {
             usersInOrganization = applyRolesFilter(request, organization);
         } else {
-            usersInOrganization = filterOrganizationUsers(request, organization);
+            usersInOrganization = filterOrganizationUsers(organization);
         }
 
-        Page<UserWithRoleResponse> result = getFilteredUsersFromAuthService(request, usersInOrganization);
-
-        return new PagedModel<>(result);
+        return getFilteredUsersFromAuthService(request, usersInOrganization);
 
     }
 
-    private Page<OrganizationUser> applyRolesFilter(
+    private List<OrganizationUser> applyRolesFilter(
             UserAndRolesFilterRequest request, Organization organization
     ) {
         return roleUserService.filterOrganizationRolesByIds(
-                request.getRolesId(),
-                organization,
-                request.getPage(),
-                request.getSize()
-        ).map(OrganizationRoleUser::getOrganizationUser);
+                        request.getRolesId(), organization
+                ).stream()
+                .map(OrganizationRoleUser::getOrganizationUser).toList();
     }
 
-    private Page<OrganizationUser> filterOrganizationUsers(
-            UserAndRolesFilterRequest request, Organization organization
+    private List<OrganizationUser> filterOrganizationUsers(
+            Organization organization
     ) {
-        return organizationUserService.getUsersInOrganization(
-                organization,
-                request.getPage(),
-                request.getSize()
-        );
+        return organizationUserService.getUsersInOrganization(organization);
     }
 
-    private Page<UserWithRoleResponse> getFilteredUsersFromAuthService(
-            UserFilterRequest request, Page<OrganizationUser> usersInOrganization
+    private PagedModel<UserWithRoleResponse> getFilteredUsersFromAuthService(
+            UserFilterRequest request, List<OrganizationUser> usersInOrganization
     ) {
-        List<UserAndRoles> userAndRoles = usersInOrganization.getContent()
+        List<UserAndRoles> userAndRoles = usersInOrganization
                 .stream()
                 .map(organizationUserMapper::toUserAndRoleResponse)
                 .toList();
@@ -88,15 +78,7 @@ public class OrganizationUsersFilterService {
 
         rolesFilterRequest.setUserAndRoles(userAndRoles);
 
-        rolesFilterRequest.setPage(0);
-
-        List<UserWithRoleResponse> userWithRoleResponse = userClientWrapper.filterUsers(rolesFilterRequest).getContent();
-
-        return new PageImpl<>(
-                userWithRoleResponse,
-                usersInOrganization.getPageable(),
-                usersInOrganization.getTotalElements()
-        );
+        return userClientWrapper.filterUsers(rolesFilterRequest);
     }
 
 }

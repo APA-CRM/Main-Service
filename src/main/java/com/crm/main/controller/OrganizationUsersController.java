@@ -19,8 +19,8 @@ public class OrganizationUsersController {
 
     private final OrganizationUsersFacade facade;
 
-    @PostMapping("/{organizationId}/users")
-    public PagedModel<UserWithRoleResponse> getUsersOfOrganization(
+    @PostMapping("/{organizationId}/users/filter")
+    public PagedModel<UserWithRoleResponse> filterOrganizationUsers(
             @Valid @RequestBody UserAndRolesFilterRequest request,
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable("organizationId") Long organizationId
