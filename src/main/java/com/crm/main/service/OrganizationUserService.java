@@ -6,9 +6,6 @@ import com.crm.main.persistance.repository.OrganizationUserRepository;
 import com.crm.sharedlib.exception.ForbiddenException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,13 +42,8 @@ public class OrganizationUserService {
                 .orElseThrow(() -> new NotFoundException("User is not found"));
     }
 
-    public Page<OrganizationUser> getUsersInOrganization(
-            Organization organization,
-            Integer page, Integer size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return repository.findByOrganization(organization, pageable);
+    public List<OrganizationUser> getUsersInOrganization(Organization organization) {
+        return repository.findByOrganization(organization);
     }
 
     public List<OrganizationUser> getAllOrganizationsOfUser(Long userId) {

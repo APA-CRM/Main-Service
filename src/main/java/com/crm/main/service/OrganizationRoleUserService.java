@@ -8,9 +8,6 @@ import com.crm.main.persistance.repository.OrganizationRoleUserRepository;
 import com.crm.sharedlib.exception.ConflictException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,13 +49,10 @@ public class OrganizationRoleUserService {
                 .orElseThrow(() -> new NotFoundException("Role for user is not found"));
     }
 
-    public Page<OrganizationRoleUser> filterOrganizationRolesByIds(
-            List<Long> rolesId, Organization organization,
-            Integer page, Integer size
+    public List<OrganizationRoleUser> filterOrganizationRolesByIds(
+            List<Long> rolesId, Organization organization
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return repository.findByRolesInAndOrganization(rolesId, organization, pageable);
+        return repository.findByRolesInAndOrganization(rolesId, organization);
     }
 
     @Transactional

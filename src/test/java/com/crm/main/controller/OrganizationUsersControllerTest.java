@@ -31,7 +31,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
 
     @Test
     @DisplayName("Get users of organization when user not in organization expected forbidden response")
-    public void getUsersOfOrganizationWhenUserNotInOrganizationExpectedForbidden() {
+    public void filterOrganizationWhenUserNotInOrganizationUsersExpectedForbidden() {
 
         UserFilterRequest request = new UserFilterRequest();
 
@@ -45,7 +45,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .header(USER_ID_HEADER_NAME, 100)
                 .body(request)
                 .when()
-                .post(BASE_URI + "/{organizationId}/users", organizationId)
+                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
@@ -56,7 +56,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
 
     @Test
     @DisplayName("Get users of organization expected success response")
-    public void getUsersOfOrganizationExpectedSuccess() throws JsonProcessingException {
+    public void filterOrganizationUsersExpectedSuccess() throws JsonProcessingException {
         final long organizationId = 100;
 
 
@@ -99,7 +99,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .header(USER_ID_HEADER_NAME, 1)
                 .body(request)
                 .when()
-                .post(BASE_URI + "/{organizationId}/users", organizationId)
+                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
@@ -113,7 +113,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
 
     @Test
     @DisplayName("Get users of organization when roles id is specified expected success response with empty content")
-    public void getUsersOfOrganizationWhenRolesIdIsSpecifiedExpectedSuccess() throws JsonProcessingException {
+    public void filterOrganizationUsersWhenRolesIdIsSpecifiedExpectedSuccess() throws JsonProcessingException {
         final long organizationId = 100;
 
         UserAndRolesFilterRequest request = new UserAndRolesFilterRequest();
@@ -128,7 +128,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                         "page": {
                             "size": 5,
                             "number": 0,
-                            "totalElements": 3,
+                            "totalElements": 0,
                             "totalPages": 0
                         }
                     }
@@ -143,7 +143,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .header(USER_ID_HEADER_NAME, 1)
                 .body(request)
                 .when()
-                .post(BASE_URI + "/{organizationId}/users", organizationId)
+                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()

@@ -4,8 +4,6 @@ import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationRoleUser;
 import com.crm.main.persistance.entity.OrganizationUser;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,10 +26,9 @@ public interface OrganizationRoleUserRepository
                     """
     )
     @EntityGraph(attributePaths = {"organizationRole", "organizationUser"})
-    Page<OrganizationRoleUser> findByRolesInAndOrganization(
+    List<OrganizationRoleUser> findByRolesInAndOrganization(
             @Param("rolesId") List<Long> rolesId,
-            @Param("organization") Organization organization,
-            Pageable pageable
+            @Param("organization") Organization organization
     );
 
     Optional<OrganizationRoleUser> findByOrganizationUserAndOrganizationRole(
