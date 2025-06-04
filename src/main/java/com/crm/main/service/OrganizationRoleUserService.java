@@ -49,6 +49,10 @@ public class OrganizationRoleUserService {
                 .orElseThrow(() -> new NotFoundException("Role for user is not found"));
     }
 
+    public List<OrganizationRoleUser> getOrganizationUserRoles(OrganizationUser organizationUser) {
+        return repository.findByOrganizationUser(organizationUser);
+    }
+
     public List<OrganizationRoleUser> filterOrganizationRolesByIds(
             List<Long> rolesId, Organization organization
     ) {

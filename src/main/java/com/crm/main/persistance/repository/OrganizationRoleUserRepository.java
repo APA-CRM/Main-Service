@@ -36,6 +36,8 @@ public interface OrganizationRoleUserRepository
             OrganizationRole organizationRole
     );
 
+    List<OrganizationRoleUser> findByOrganizationUser(OrganizationUser organizationUser);
+
     void deleteByOrganizationUser(OrganizationUser organizationUser);
 
     void deleteByOrganizationRole(OrganizationRole organizationRole);
