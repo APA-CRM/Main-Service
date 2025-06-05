@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
@@ -26,6 +27,9 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
 
     @MockitoBean
     private AuthClient authClient;
+
+    @MockitoBean
+    private RabbitTemplate rabbitTemplate;
 
     @Test
     @DisplayName("Add role for user in organization expected success response")
