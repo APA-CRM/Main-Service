@@ -9,6 +9,7 @@ import com.crm.main.service.OrganizationUserService;
 import com.crm.sharedlib.annotations.Facade;
 import com.crm.sharedlib.dto.response.OrganizationUserRolesResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class InternalOrganizationUserRoleFacade {
     private final OrganizationUserService userService;
     private final OrganizationRoleUserService roleUserService;
 
+    @Transactional
     public OrganizationUserRolesResponse getOrganizationUserRoles(
             Long organizationId, Long userId
     ) {
