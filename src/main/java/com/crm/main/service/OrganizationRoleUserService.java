@@ -53,6 +53,10 @@ public class OrganizationRoleUserService {
         return repository.findByOrganizationUser(organizationUser);
     }
 
+    public List<OrganizationRoleUser> getOrganizationUserRoles(OrganizationRole organizationRole) {
+        return repository.findByOrganizationRole(organizationRole);
+    }
+
     public List<OrganizationRoleUser> filterOrganizationRolesByIds(
             List<Long> rolesId, Organization organization
     ) {

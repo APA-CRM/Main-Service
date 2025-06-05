@@ -38,6 +38,8 @@ public interface OrganizationRoleUserRepository
 
     List<OrganizationRoleUser> findByOrganizationUser(OrganizationUser organizationUser);
 
+    List<OrganizationRoleUser> findByOrganizationRole(OrganizationRole organizationRole);
+
     void deleteByOrganizationUser(OrganizationUser organizationUser);
 
     void deleteByOrganizationRole(OrganizationRole organizationRole);

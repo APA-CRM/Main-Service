@@ -21,6 +21,10 @@ public class OrganizationRolesController {
 
     private final OrganizationRolesFacade facade;
 
+    /**
+     * @deprecated Use filter endpoint {@link #filterOrganizationRoles(RoleFilterRequest, Long, Long)}
+     */
+    @Deprecated(forRemoval = true)
     @GetMapping("/{organizationId}/roles")
     public List<RoleResponse> getOrganizationRoles(
             @PathVariable("organizationId") Long organizationId,

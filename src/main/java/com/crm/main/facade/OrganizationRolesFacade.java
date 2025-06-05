@@ -85,9 +85,7 @@ public class OrganizationRolesFacade {
 
         userService.getIsUserInOrganizationOrThrowException(organization, userId);
 
-        OrganizationRole role = roleService.getOrganizationRole(organization, roleId);
-
-        return roleClientWrapper.updateRole(request, roleId);
+        return assignmentService.updateOrganizationRole(request, organization, roleId);
     }
 
     @Transactional
