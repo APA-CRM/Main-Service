@@ -14,10 +14,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    private TemplateBuilder templateBuilder;
+    private final TemplateBuilder templateBuilder;
 
     public void sendEmail(String to, String text, String subject) {
         MimeMessage message = mailSender.createMimeMessage();

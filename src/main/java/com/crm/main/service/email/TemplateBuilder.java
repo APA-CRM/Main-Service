@@ -11,8 +11,7 @@ import org.thymeleaf.context.Context;
 @RequiredArgsConstructor
 public class TemplateBuilder {
 
-    @Autowired
-    private TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
 
     public String buildPasswordEmail(String password) {
 

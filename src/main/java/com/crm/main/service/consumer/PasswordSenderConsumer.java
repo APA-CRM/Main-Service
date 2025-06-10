@@ -15,9 +15,9 @@ import static com.crm.sharedlib.consts.CrmConstants.SEND_PASSWORD_QUEUE;
 @Slf4j
 public class PasswordSenderConsumer {
 
-    private EmailService emailService;
+    private final EmailService emailService;
 
-    private TemplateBuilder templateBuilder;
+    private final TemplateBuilder templateBuilder;
 
     @RabbitListener(queues = SEND_PASSWORD_QUEUE)
     public void sendPassword(SendPasswordEmail message) {
