@@ -9,9 +9,7 @@ import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.operation.OrganizationCreatorService;
-import com.crm.main.service.wrapper.RoleClientWrapper;
 import com.crm.sharedlib.annotations.Facade;
-import com.crm.sharedlib.dto.response.RoleResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -25,8 +23,6 @@ public class OrganizationFacade {
     private final OrganizationUserService organizationUserService;
 
     private final OrganizationCreatorService organizationCreatorService;
-
-    private final RoleClientWrapper roleClientWrapper;
 
     private final OrganizationMapper organizationMapper;
 
@@ -51,10 +47,8 @@ public class OrganizationFacade {
             CreateOrganizationRequest request,
             Long userId
     ) {
-        RoleResponse role = roleClientWrapper.createAdminRoleForOrganization();
-
         Organization organization = organizationCreatorService
-                .createOrganization(request, userId, role.getId());
+                .createOrganization(request, userId);
 
         return organizationMapper.toDto(organization);
     }
