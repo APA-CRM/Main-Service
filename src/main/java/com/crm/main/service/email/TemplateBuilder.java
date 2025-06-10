@@ -1,4 +1,4 @@
-package com.crm.main.service.emailService;
+package com.crm.main.service.email;
 
 
 import lombok.RequiredArgsConstructor;

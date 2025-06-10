@@ -1,4 +1,4 @@
-package com.crm.main.service.emailService;
+package com.crm.main.service.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -28,7 +28,7 @@ public class EmailService {
             helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setSubject(subject);
             helper.setTo(to);
-            helper.setText(templateBuilder.buildPasswordEmail(text), true);
+            helper.setText(text, true);
         } catch (MessagingException e) {
             log.error("Something went wrong while sending email", e);
             throw new RuntimeException(e);

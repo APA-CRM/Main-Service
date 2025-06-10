@@ -1,6 +1,7 @@
 package com.crm.main.service.consumer;
 
-import com.crm.main.service.emailService.EmailService;
+import com.crm.main.service.email.EmailService;
+import com.crm.main.service.email.TemplateBuilder;
 import com.crm.sharedlib.dto.amqp.SendPasswordEmail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +17,16 @@ public class PasswordSenderConsumer {
 
     private EmailService emailService;
 
+    private TemplateBuilder templateBuilder;
+
     @RabbitListener(queues = SEND_PASSWORD_QUEUE)
     public void sendPassword(SendPasswordEmail message) {
         log.info("Sending email with password to user");
 
         String subject = "🔐Your Generated Password!";
-        emailService.sendEmail(message.getEmail(), message.getPassword(), subject);
+        String text = templateBuilder.buildPasswordEmail(message.getPassword());
+
+        emailService.sendEmail(message.getEmail(), text, subject);
 
     }
 
