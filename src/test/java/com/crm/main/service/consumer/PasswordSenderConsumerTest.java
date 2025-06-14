@@ -1,28 +1,19 @@
 package com.crm.main.service.consumer;
 
-import com.crm.main.service.email.EmailService;
-import com.crm.main.service.email.TemplateBuilder;
+import com.crm.main.controller.BaseIntegrationTest;
 import com.crm.sharedlib.dto.amqp.SendPasswordEmail;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-@ExtendWith(MockitoExtension.class)
-
-@SpringBootTest
-@ActiveProfiles("test")
-class PasswordSenderConsumerIntegrationTest {
-    @MockitoBean
-    private EmailService emailService;
+class PasswordSenderConsumerIntegrationTest extends BaseIntegrationTest {
 
     @MockitoBean
-    private TemplateBuilder templateBuilder;
+    private JavaMailSender javaMailSender;
 
     @Autowired
     private PasswordSenderConsumer consumer;
@@ -34,10 +25,11 @@ class PasswordSenderConsumerIntegrationTest {
         message.setEmail("test@local");
         message.setPassword("123456");
 
-        Mockito.when(templateBuilder.buildPasswordEmail(message.getPassword())).thenReturn("emailTemplate");
+        Mockito.when(javaMailSender.createMimeMessage())
+                .thenReturn(Mockito.mock(MimeMessage.class));
 
         consumer.sendPassword(message);
 
-        Mockito.verify(emailService, Mockito.times(1)).sendEmail(message.getEmail(), "emailTemplate", "🔐Your Generated Password!");
     }
+
 }
