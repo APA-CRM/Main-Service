@@ -21,6 +21,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.Collections;
 import java.util.List;
 
+import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
 import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -45,6 +46,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 100)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .get(BASE_URI + "/{organizationId}/roles", organizationId)
                 .then()
@@ -85,6 +87,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .get(BASE_URI + "/{organizationId}/roles", organizationId)
                 .then()
@@ -148,6 +151,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .body(request)
                 .post(BASE_URI + "/{organizationId}/roles", organizationId)
@@ -215,6 +219,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .body(request)
                 .post(BASE_URI + "/{organizationId}/roles/filter", organizationId)
@@ -238,6 +243,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .delete(BASE_URI + "/{organizationId}/roles/{roleId}", organizationId, roleId)
                 .then()

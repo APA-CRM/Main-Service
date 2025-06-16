@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
+import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
 import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -43,6 +44,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 100)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
@@ -51,6 +53,30 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .assertThat()
                 .statusCode(HttpStatus.FORBIDDEN.value())
                 .body("message", is("User is not in the organization"));
+    }
+
+    @Test
+    @DisplayName("Get users of organization when organization id is not specified expected forbidden response")
+    public void filterOrganizationWhenOrganizationIdIsNotSpecifiedUsersExpectedForbidden() {
+
+        UserFilterRequest request = new UserFilterRequest();
+
+        request.setPage(0);
+        request.setSize(5);
+
+        final long organizationId = 100;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 100)
+                .body(request)
+                .when()
+                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("message", is("Organization ID or user ID is not specified"));
     }
 
 
@@ -97,6 +123,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
@@ -141,6 +168,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
@@ -182,6 +210,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
                 .then()
@@ -224,6 +253,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
                 .then()
@@ -242,6 +272,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .delete(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
                 .then()

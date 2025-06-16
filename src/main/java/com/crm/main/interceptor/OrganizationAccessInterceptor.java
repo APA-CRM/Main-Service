@@ -2,7 +2,6 @@ package com.crm.main.interceptor;
 
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationUserService;
-import com.crm.sharedlib.consts.CrmConstants;
 import com.crm.sharedlib.exception.response.CrmErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,9 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Objects;
 import java.util.Optional;
 
+import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
+import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static java.util.Objects.isNull;
 
 @RequiredArgsConstructor
@@ -30,11 +30,11 @@ public class OrganizationAccessInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler
-    ) throws Exception {
+    ) {
 
-        String organizationId = request.getHeader(CrmConstants.ORGANIZATION_ID_HEADER_NAME);
+        String organizationId = request.getHeader(ORGANIZATION_ID_HEADER_NAME);
 
-        String userId = request.getHeader(CrmConstants.USER_ID_HEADER_NAME);
+        String userId = request.getHeader(USER_ID_HEADER_NAME);
 
         if (isNull(userId) || isNull(organizationId)) {
             respondWithError(HttpStatus.FORBIDDEN.value(), "Organization ID or user ID is not specified", response);

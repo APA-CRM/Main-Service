@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Collections;
 
+import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
 import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -69,6 +70,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -89,6 +91,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -110,6 +113,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -131,6 +135,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -152,6 +157,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
                 .delete(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
