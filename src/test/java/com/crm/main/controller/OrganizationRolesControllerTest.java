@@ -173,13 +173,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Filter organization roles expected success response")
     public void filterOrganizationRoleExpectedSuccess() throws JsonProcessingException {
-
         final Long organizationId = 100L;
-
-        RoleFilterRequest request = new RoleFilterRequest();
-
-        request.setPage(0);
-        request.setSize(5);
 
         final String responseString = """
                 {
@@ -221,8 +215,9 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
                 .when()
-                .body(request)
-                .post(BASE_URI + "/{organizationId}/roles/filter", organizationId)
+                .queryParam("page", 0)
+                .queryParam("size", 5)
+                .get(BASE_URI + "/{organizationId}/roles/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
