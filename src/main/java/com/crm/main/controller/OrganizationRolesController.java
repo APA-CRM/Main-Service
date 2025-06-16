@@ -40,10 +40,10 @@ public class OrganizationRolesController {
         return facade.createRole(request, organizationId);
     }
 
-    @PostMapping("/{organizationId}/roles/filter")
+    @GetMapping("/{organizationId}/roles/filter")
     public PagedModel<RoleResponse> filterOrganizationRoles(
             @Valid
-            @RequestBody
+            @ModelAttribute
             RoleFilterRequest request,
             @PathVariable("organizationId") Long organizationId
     ) {

@@ -1,8 +1,6 @@
 package com.crm.main.controller;
 
-import com.crm.main.dto.request.UserAndRolesFilterRequest;
 import com.crm.main.feign.AuthClient;
-import com.crm.sharedlib.dto.request.UserFilterRequest;
 import com.crm.sharedlib.dto.response.RestResponsePage;
 import com.crm.sharedlib.dto.response.UserResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,21 +31,16 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Get users of organization when user not in organization expected forbidden response")
     public void filterOrganizationWhenUserNotInOrganizationUsersExpectedForbidden() {
-
-        UserFilterRequest request = new UserFilterRequest();
-
-        request.setPage(0);
-        request.setSize(5);
-
         final long organizationId = 100;
 
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 100)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
-                .body(request)
+                .queryParam("page", 0)
+                .queryParam("size", 5)
                 .when()
-                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
+                .get(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
@@ -58,20 +51,15 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Get users of organization when organization id is not specified expected forbidden response")
     public void filterOrganizationWhenOrganizationIdIsNotSpecifiedUsersExpectedForbidden() {
-
-        UserFilterRequest request = new UserFilterRequest();
-
-        request.setPage(0);
-        request.setSize(5);
-
         final long organizationId = 100;
 
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 100)
-                .body(request)
+                .queryParam("page", 0)
+                .queryParam("size", 5)
                 .when()
-                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
+                .get(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
@@ -84,13 +72,6 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
     @DisplayName("Get users of organization expected success response")
     public void filterOrganizationUsersExpectedSuccess() throws JsonProcessingException {
         final long organizationId = 100;
-
-
-        UserFilterRequest request = new UserFilterRequest();
-
-        request.setPage(0);
-        request.setSize(5);
-
 
         final String responseString = """
                     {
@@ -124,16 +105,17 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
-                .body(request)
+                .queryParam("page", 0)
+                .queryParam("size", 5)
                 .when()
-                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
+                .get(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .body("content", hasSize(1))
-                .body("page.size", is(request.getSize()))
-                .body("page.number", is(request.getPage()))
+                .body("page.size", is(5))
+                .body("page.number", is(0))
                 .body("page.totalElements", is(1))
                 .body("page.totalPages", is(1));
     }
@@ -142,12 +124,6 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
     @DisplayName("Get users of organization when roles id is specified expected success response with empty content")
     public void filterOrganizationUsersWhenRolesIdIsSpecifiedExpectedSuccess() throws JsonProcessingException {
         final long organizationId = 100;
-
-        UserAndRolesFilterRequest request = new UserAndRolesFilterRequest();
-
-        request.setPage(0);
-        request.setSize(5);
-        request.setRolesId(List.of(100L, 101L));
 
         final String responseString = """
                     {
@@ -169,15 +145,17 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
-                .body(request)
+                .queryParam("page", 0)
+                .queryParam("size", 5)
+                .queryParam("rolesId", List.of(100L, 101L))
                 .when()
-                .post(BASE_URI + "/{organizationId}/users/filter", organizationId)
+                .get(BASE_URI + "/{organizationId}/users/filter", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("page.size", is(request.getSize()))
-                .body("page.number", is(request.getPage()))
+                .body("page.size", is(5))
+                .body("page.number", is(0))
                 .body("page.totalElements", is(0))
                 .body("page.totalPages", is(0));
     }
