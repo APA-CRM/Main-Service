@@ -10,8 +10,6 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
-
 @RestController
 @RequestMapping("/api/organizations")
 @RequiredArgsConstructor
@@ -22,22 +20,20 @@ public class OrganizationUsersController {
     @PostMapping("/{organizationId}/users/filter")
     public PagedModel<UserWithRoleResponse> filterOrganizationUsers(
             @Valid @RequestBody UserAndRolesFilterRequest request,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable("organizationId") Long organizationId
     ) {
         return facade.filterOrganizationUsers(
-                request, userId, organizationId
+                request, organizationId
         );
     }
 
     @PutMapping("/{organizationId}/users/{userId}")
     public UserResponse addUserToOrganization(
             @PathVariable("organizationId") Long organizationId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable("userId") Long userIdToAddToOrganization
     ) {
         return facade.addUserToOrganization(
-                userId, organizationId,
+                organizationId,
                 userIdToAddToOrganization
         );
     }
@@ -45,11 +41,10 @@ public class OrganizationUsersController {
     @DeleteMapping("/{organizationId}/users/{userId}")
     public ResponseEntity<Void> removeUserFromOrganization(
             @PathVariable("organizationId") Long organizationId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable("userId") Long userIdToAddToOrganization
     ) {
         facade.removeUserFromOrganization(
-                userId, organizationId,
+                organizationId,
                 userIdToAddToOrganization
         );
 

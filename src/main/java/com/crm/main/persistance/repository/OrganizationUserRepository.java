@@ -3,6 +3,8 @@ package com.crm.main.persistance.repository;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +13,16 @@ import java.util.UUID;
 
 @Repository
 public interface OrganizationUserRepository extends JpaRepository<OrganizationUser, UUID> {
+
+    @Query("""
+            SELECT ou FROM OrganizationUser ou
+            WHERE ou.organization.id = :organizationId AND
+            ou.userId = :userId
+            """
+    )
+    Optional<OrganizationUser> findByOrganizationIdAndUserId(
+            @Param("organizationId") Long organizationId, @Param("userId") Long userId
+    );
 
     Optional<OrganizationUser> findByOrganizationAndUserId(Organization organization, Long userId);
 
