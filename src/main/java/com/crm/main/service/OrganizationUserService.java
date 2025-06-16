@@ -3,7 +3,6 @@ package com.crm.main.service;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.persistance.repository.OrganizationUserRepository;
-import com.crm.sharedlib.exception.ForbiddenException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,11 @@ public class OrganizationUserService {
 
     private final OrganizationUserRepository repository;
 
-    //TODO: Think about using interceptor instead of manual invoking this method
-    public void getIsUserInOrganizationOrThrowException(
-            Organization organization,
+    public Optional<OrganizationUser> getByOrganizationAndUserId(
+            Long organizationId,
             Long userId
     ) {
-        repository.findByOrganizationAndUserId(organization, userId)
-                .orElseThrow(() -> new ForbiddenException("User is not in the organization"));
+        return repository.findByOrganizationIdAndUserId(organizationId, userId);
     }
 
     public Optional<OrganizationUser> getOrganizationUserOptional(

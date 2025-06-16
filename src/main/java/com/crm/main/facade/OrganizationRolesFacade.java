@@ -4,7 +4,6 @@ import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationService;
-import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.assignments.OrganizationRoleAssignmentService;
 import com.crm.main.service.filter.OrganizationRoleFilterService;
 import com.crm.main.service.wrapper.RoleClientWrapper;
@@ -26,8 +25,6 @@ public class OrganizationRolesFacade {
 
     private final OrganizationRoleService roleService;
 
-    private final OrganizationUserService userService;
-
     private final RoleClientWrapper roleClientWrapper;
 
     private final OrganizationRoleFilterService filterService;
@@ -35,11 +32,9 @@ public class OrganizationRolesFacade {
     private final OrganizationRoleAssignmentService assignmentService;
 
     @Transactional
-    public List<RoleResponse> getOrganizationRoles(Long organizationId, Long userId) {
+    public List<RoleResponse> getOrganizationRoles(Long organizationId) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
-
-        userService.getIsUserInOrganizationOrThrowException(organization, userId);
 
         List<Long> rolesId = roleService.getOrganizationsRoles(organization)
                 .stream()
@@ -52,50 +47,40 @@ public class OrganizationRolesFacade {
     @Transactional
     public RoleResponse createRole(
             RoleRequest request,
-            Long organizationId,
-            Long userId
+            Long organizationId
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
-
-        userService.getIsUserInOrganizationOrThrowException(organization, userId);
 
         return assignmentService.createOrganizationRole(organization, request);
     }
 
     public PagedModel<RoleResponse> filterOrganizationRoles(
             RoleFilterRequest request,
-            Long organizationId,
-            Long userId
+            Long organizationId
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
-
-        userService.getIsUserInOrganizationOrThrowException(organization, userId);
 
         return filterService.filterRoles(request, organization);
     }
 
     public RoleResponse updateOrganizationRole(
             RoleRequest request, Long organizationId,
-            Long roleId, Long userId
+            Long roleId
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
-
-        userService.getIsUserInOrganizationOrThrowException(organization, userId);
 
         return assignmentService.updateOrganizationRole(request, organization, roleId);
     }
 
     @Transactional
     public void deleteOrganizationRole(
-            Long organizationId, Long roleId, Long userId
+            Long organizationId, Long roleId
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
-
-        userService.getIsUserInOrganizationOrThrowException(organization, userId);
 
         assignmentService.deleteOrganizationRole(organization, roleId);
     }

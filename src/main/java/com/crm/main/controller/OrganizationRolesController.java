@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
-
 @RestController
 @RequestMapping("/api/organizations")
 @RequiredArgsConstructor
@@ -22,15 +20,14 @@ public class OrganizationRolesController {
     private final OrganizationRolesFacade facade;
 
     /**
-     * @deprecated Use filter endpoint {@link #filterOrganizationRoles(RoleFilterRequest, Long, Long)}
+     * @deprecated Use filter endpoint {@link #filterOrganizationRoles(RoleFilterRequest, Long)}
      */
     @Deprecated(forRemoval = true)
     @GetMapping("/{organizationId}/roles")
     public List<RoleResponse> getOrganizationRoles(
-            @PathVariable("organizationId") Long organizationId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+            @PathVariable("organizationId") Long organizationId
     ) {
-        return facade.getOrganizationRoles(organizationId, userId);
+        return facade.getOrganizationRoles(organizationId);
     }
 
     @PostMapping("/{organizationId}/roles")
@@ -38,10 +35,9 @@ public class OrganizationRolesController {
             @Valid
             @RequestBody
             RoleRequest request,
-            @PathVariable("organizationId") Long organizationId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+            @PathVariable("organizationId") Long organizationId
     ) {
-        return facade.createRole(request, organizationId, userId);
+        return facade.createRole(request, organizationId);
     }
 
     @PostMapping("/{organizationId}/roles/filter")
@@ -49,10 +45,9 @@ public class OrganizationRolesController {
             @Valid
             @RequestBody
             RoleFilterRequest request,
-            @PathVariable("organizationId") Long organizationId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+            @PathVariable("organizationId") Long organizationId
     ) {
-        return facade.filterOrganizationRoles(request, organizationId, userId);
+        return facade.filterOrganizationRoles(request, organizationId);
     }
 
     @PutMapping("/{organizationId}/roles/{roleId}")
@@ -61,19 +56,17 @@ public class OrganizationRolesController {
             @RequestBody
             RoleRequest request,
             @PathVariable("organizationId") Long organizationId,
-            @PathVariable("roleId") Long roleId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+            @PathVariable("roleId") Long roleId
     ) {
-        return facade.updateOrganizationRole(request, organizationId, roleId, userId);
+        return facade.updateOrganizationRole(request, organizationId, roleId);
     }
 
     @DeleteMapping("/{organizationId}/roles/{roleId}")
     public ResponseEntity<Void> deleteOrganizationRole(
             @PathVariable("organizationId") Long organizationId,
-            @PathVariable("roleId") Long roleId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+            @PathVariable("roleId") Long roleId
     ) {
-        facade.deleteOrganizationRole(organizationId, roleId, userId);
+        facade.deleteOrganizationRole(organizationId, roleId);
 
         return ResponseEntity.noContent().build();
     }
