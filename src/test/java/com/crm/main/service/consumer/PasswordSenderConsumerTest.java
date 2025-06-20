@@ -1,7 +1,7 @@
 package com.crm.main.service.consumer;
 
 import com.crm.main.controller.BaseIntegrationTest;
-import com.crm.sharedlib.dto.amqp.SendPasswordEmail;
+import com.crm.sharedlib.dto.amqp.SendPasswordByEmailEvent;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class PasswordSenderConsumerIntegrationTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Verification of the method when generating a password")
     void emailServiceTest() {
-        SendPasswordEmail message = new SendPasswordEmail();
+        SendPasswordByEmailEvent message = new SendPasswordByEmailEvent();
         message.setEmail("test@local");
         message.setPassword("123456");
 
