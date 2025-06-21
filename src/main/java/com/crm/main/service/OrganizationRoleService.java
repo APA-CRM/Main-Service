@@ -48,6 +48,13 @@ public class OrganizationRoleService {
         );
     }
 
+    public OrganizationRole getOrganizationRoleByRoleType(
+            Organization organization, RoleType roleType
+    ) {
+        return repository.findByOrganizationAndRoleType(organization, roleType)
+                .orElseThrow(() -> new NotFoundException("Role is not found"));
+    }
+
     public OrganizationRole getOrganizationRole(Organization organization, Long roleId) {
         return repository.findByOrganizationAndRoleId(organization, roleId)
                 .orElseThrow(() -> new NotFoundException("Role is not found"));

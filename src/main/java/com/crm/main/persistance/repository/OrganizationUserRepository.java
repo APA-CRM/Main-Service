@@ -24,6 +24,15 @@ public interface OrganizationUserRepository extends JpaRepository<OrganizationUs
             @Param("organizationId") Long organizationId, @Param("userId") Long userId
     );
 
+    @Query(
+            """
+                    SELECT ou FROM OrganizationUser ou
+                    WHERE ou.organization = :organization
+                    AND ou.organizationRoleUsers IS EMPTY
+                    """
+    )
+    List<OrganizationUser> findOrganizationUsersWhereRolesEmpty(@Param("organization") Organization organization);
+
     Optional<OrganizationUser> findByOrganizationAndUserId(Organization organization, Long userId);
 
     List<OrganizationUser> findByOrganization(Organization organization);
