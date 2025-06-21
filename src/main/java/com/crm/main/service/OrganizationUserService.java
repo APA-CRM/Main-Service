@@ -39,6 +39,10 @@ public class OrganizationUserService {
                 .orElseThrow(() -> new NotFoundException("User is not found"));
     }
 
+    public List<OrganizationUser> getOrganizationUsersNoRoles(Organization organization) {
+        return repository.findOrganizationUsersWhereRolesEmpty(organization);
+    }
+
     public List<OrganizationUser> getUsersInOrganization(Organization organization) {
         return repository.findByOrganization(organization);
     }

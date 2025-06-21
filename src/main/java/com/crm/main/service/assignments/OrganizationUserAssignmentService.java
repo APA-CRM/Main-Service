@@ -1,7 +1,10 @@
 package com.crm.main.service.assignments;
 
+import com.crm.main.enums.RoleType;
 import com.crm.main.persistance.entity.Organization;
+import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationUser;
+import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationRoleUserService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.wrapper.UserClientWrapper;
@@ -18,7 +21,7 @@ import java.util.Optional;
 public class OrganizationUserAssignmentService {
 
     private final OrganizationUserService organizationUserService;
-
+    private final OrganizationRoleService roleService;
     private final OrganizationRoleUserService roleUserService;
 
     private final UserClientWrapper userClientWrapper;
@@ -38,7 +41,13 @@ public class OrganizationUserAssignmentService {
 
         UserResponse user = userClientWrapper.getUserById(userId);
 
-        organizationUserService.createUserOfOrganization(organization, userId);
+        OrganizationUser userOfOrganization =
+                organizationUserService.createUserOfOrganization(organization, userId);
+
+        OrganizationRole memberRole =
+                roleService.getOrganizationRoleByRoleType(organization, RoleType.MEMBER);
+
+        roleUserService.createRoleForOrganizationUser(memberRole, userOfOrganization);
 
         return user;
     }

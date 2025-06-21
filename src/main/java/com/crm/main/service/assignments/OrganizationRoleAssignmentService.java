@@ -1,10 +1,13 @@
 package com.crm.main.service.assignments;
 
+import com.crm.main.enums.RoleType;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationRoleUser;
+import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationRoleUserService;
+import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.OrgUserRoleChangedProducer;
 import com.crm.main.service.wrapper.RoleClientWrapper;
 import com.crm.sharedlib.dto.request.RoleRequest;
@@ -20,8 +23,8 @@ import java.util.List;
 public class OrganizationRoleAssignmentService {
 
     private final OrganizationRoleService roleService;
-
     private final OrganizationRoleUserService roleUserService;
+    private final OrganizationUserService userService;
 
     private final RoleClientWrapper roleClientWrapper;
 
@@ -66,11 +69,27 @@ public class OrganizationRoleAssignmentService {
 
         roleClientWrapper.deleteRole(roleId);
 
+        setMemberRoleToUsersThatDoesNotHaveRoles(organization);
+
         // TODO: Think how to improve this code. It's cause N+1 JPA problem
         for (OrganizationRoleUser organizationRoleUser : userRoles) {
             producer.sendOrgUserRoleChanged(organization, organizationRoleUser.getOrganizationUser());
         }
 
+    }
+
+    private void setMemberRoleToUsersThatDoesNotHaveRoles(
+            Organization organization
+    ) {
+        OrganizationRole memberRole =
+                roleService.getOrganizationRoleByRoleType(organization, RoleType.MEMBER);
+
+        List<OrganizationUser> usersWithNoRoles = userService.getOrganizationUsersNoRoles(organization);
+
+        // TODO: Think how to improve this code. It's cause N+1 JPA problem
+        for (OrganizationUser user : usersWithNoRoles) {
+            roleUserService.createRoleForOrganizationUser(memberRole, user);
+        }
     }
 
 }

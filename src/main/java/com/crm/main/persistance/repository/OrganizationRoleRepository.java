@@ -1,9 +1,8 @@
 package com.crm.main.persistance.repository;
 
+import com.crm.main.enums.RoleType;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +16,8 @@ public interface OrganizationRoleRepository
 
     List<OrganizationRole> findByOrganization(Organization organization);
 
-    Page<OrganizationRole> findByOrganization(Organization organization, Pageable pageable);
-
     Optional<OrganizationRole> findByOrganizationAndRoleId(Organization organization, Long roleId);
+
+    Optional<OrganizationRole> findByOrganizationAndRoleType(Organization organization, RoleType roleType);
 
 }
