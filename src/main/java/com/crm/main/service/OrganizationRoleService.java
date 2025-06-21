@@ -4,6 +4,7 @@ import com.crm.main.enums.RoleType;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.repository.OrganizationRoleRepository;
+import com.crm.sharedlib.exception.ForbiddenException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,12 @@ public class OrganizationRoleService {
 
     @Transactional
     public void deleteOrganizationRole(OrganizationRole organizationRole) {
+        RoleType roleType = organizationRole.getRoleType();
+
+        if (roleType == RoleType.ADMIN || roleType == RoleType.MEMBER) {
+            throw new ForbiddenException("You can't delete this role");
+        }
+
         repository.delete(organizationRole);
     }
 

@@ -233,7 +233,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
 
         final long organizationId = 100;
 
-        final long roleId = 1L;
+        final long roleId = 4L;
 
         given()
                 .contentType(ContentType.JSON)
@@ -245,6 +245,27 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .log().all()
                 .assertThat()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("Delete organization when 'Admin' role expected forbidden response")
+    public void deleteOrganizationRoleWhenAdminRoleExpectedForbidden() {
+
+        final long organizationId = 100;
+
+        final long roleId = 1L;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .when()
+                .delete(BASE_URI + "/{organizationId}/roles/{roleId}", organizationId, roleId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("message", is("You can't delete this role"));
     }
 
 }
