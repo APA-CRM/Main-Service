@@ -20,12 +20,12 @@ INSERT INTO organization_user(
 );
 
 INSERT INTO organization_role(
-    id, role_id, organization_id
+    id, role_id, organization_id, role_type
 ) VALUES
-('5682d1e7-3eb4-4e41-923a-7b7abc0239c9', 1, 100),
-('5682d1e7-3eb4-4e41-923a-7b7abc0239c8', 2, 100),
-('5682d1e7-3eb4-4e41-923a-7b7abc0239c7', 3, 100),
-('5682d1e7-3eb4-4e41-923a-7b7abc0239c6', 4, 100);
+('5682d1e7-3eb4-4e41-923a-7b7abc0239c9', 1, 100, 'ADMIN'),
+('5682d1e7-3eb4-4e41-923a-7b7abc0239c8', 2, 100, 'MEMBER'),
+('5682d1e7-3eb4-4e41-923a-7b7abc0239c7', 3, 100, 'USER'),
+('5682d1e7-3eb4-4e41-923a-7b7abc0239c6', 4, 100, 'USER');
 
 INSERT INTO organization_role_user(
     id, organization_role_id, organization_user_id

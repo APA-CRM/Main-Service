@@ -1,5 +1,6 @@
 package com.crm.main.persistance.entity;
 
+import com.crm.main.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,10 @@ public class OrganizationRole {
 
     @Column(nullable = false)
     private Long roleId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType roleType;
 
     @CreatedDate
     private Instant createdAt;

@@ -11,8 +11,8 @@ import com.crm.main.service.OrganizationService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.OrgUserRoleChangedProducer;
 import com.crm.main.service.wrapper.RoleClientWrapper;
+import com.crm.sharedlib.dto.request.CreateRoleRequest;
 import com.crm.sharedlib.dto.request.ResourceWithActionsRequest;
-import com.crm.sharedlib.dto.request.RoleRequest;
 import com.crm.sharedlib.dto.response.RoleResponse;
 import com.crm.sharedlib.enums.Action;
 import com.crm.sharedlib.enums.Resource;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +40,9 @@ public class OrganizationCreatorService {
     @Value("${app.roles.default-admin-name}")
     private String adminRoleName;
 
+    @Value("${app.roles.default-member-name}")
+    private String memberRoleName;
+
     @Transactional
     public Organization createOrganization(
             CreateOrganizationRequest request,
@@ -46,10 +50,9 @@ public class OrganizationCreatorService {
     ) {
         Organization organization = organizationService.createOrganization(request);
 
-        RoleResponse adminRole = createAdminRoleForOrganization();
+        OrganizationRole role = createAdminRoleForOrganization(organization);
 
-        OrganizationRole role =
-                organizationRoleService.createRoleForOrganization(organization, adminRole.getId());
+        createMemberRoleForOrganization(organization);
 
         OrganizationUser userOfOrganization =
                 organizationUserService.createUserOfOrganization(organization, userId);
@@ -62,18 +65,39 @@ public class OrganizationCreatorService {
         return organization;
     }
 
-    private RoleResponse createAdminRoleForOrganization() {
-        RoleRequest request = new RoleRequest();
+    private OrganizationRole createAdminRoleForOrganization(Organization organization) {
+        RoleResponse roleResponse =
+                createRoleWithOneAccessControl(
+                        adminRoleName, Resource.ALL, Collections.singletonList(Action.ALL)
+                );
 
-        request.setName(adminRoleName);
+        return organizationRoleService
+                .createAdminRoleForOrganization(organization, roleResponse.getId());
+    }
 
-        ResourceWithActionsRequest resource = new ResourceWithActionsRequest();
-        resource.setResource(Resource.ALL);
-        resource.setActions(Collections.singletonList(Action.ALL));
+    private void createMemberRoleForOrganization(Organization organization) {
+        RoleResponse roleResponse =
+                createRoleWithOneAccessControl(
+                        memberRoleName, Resource.ALL, Collections.singletonList(Action.READ)
+                );
 
-        request.setResources(Collections.singletonList(resource));
+        organizationRoleService
+                .createMemberRoleForOrganization(organization, roleResponse.getId());
+    }
 
-        return roleClientWrapper.createRole(request);
+    private RoleResponse createRoleWithOneAccessControl(String name, Resource resource, List<Action> actions) {
+        CreateRoleRequest roleRequest = new CreateRoleRequest();
+
+        roleRequest.setName(name);
+        roleRequest.setIsDeletable(false);
+
+        ResourceWithActionsRequest actionsRequest = new ResourceWithActionsRequest();
+        actionsRequest.setResource(resource);
+        actionsRequest.setActions(actions);
+
+        roleRequest.setResources(Collections.singletonList(actionsRequest));
+
+        return roleClientWrapper.createRole(roleRequest);
     }
 
 }
