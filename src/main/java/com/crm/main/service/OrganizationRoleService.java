@@ -64,11 +64,15 @@ public class OrganizationRoleService {
         return repository.findByOrganization(organization);
     }
 
-    @Transactional
-    public void deleteOrganizationRole(OrganizationRole organizationRole) {
+    public boolean isUndeletableRole(OrganizationRole organizationRole) {
         RoleType roleType = organizationRole.getRoleType();
 
-        if (roleType == RoleType.ADMIN || roleType == RoleType.MEMBER) {
+        return roleType == RoleType.MEMBER || roleType == RoleType.ADMIN;
+    }
+
+    @Transactional
+    public void deleteOrganizationRole(OrganizationRole organizationRole) {
+        if (isUndeletableRole(organizationRole)) {
             throw new ForbiddenException("You can't delete this role");
         }
 

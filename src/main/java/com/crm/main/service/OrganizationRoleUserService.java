@@ -66,6 +66,10 @@ public class OrganizationRoleUserService {
     @Transactional
     public void deleteRoleForUser(OrganizationRoleUser organizationRoleUser) {
         repository.delete(organizationRoleUser);
+
+        organizationRoleUser.getOrganizationUser()
+                .getOrganizationRoleUsers()
+                .remove(organizationRoleUser);
     }
 
     @Transactional

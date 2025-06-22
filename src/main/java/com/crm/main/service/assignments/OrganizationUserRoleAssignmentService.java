@@ -10,6 +10,7 @@ import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.OrgUserRoleChangedProducer;
 import com.crm.main.service.wrapper.RoleClientWrapper;
 import com.crm.sharedlib.dto.response.RoleResponse;
+import com.crm.sharedlib.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,10 +56,13 @@ public class OrganizationUserRoleAssignmentService {
         OrganizationRoleUser roleOfUserOrganization =
                 roleUserService.getRoleOfUserOrganization(role, organizationUser);
 
+        if(organizationUser.getOrganizationRoleUsers().size() == 1) {
+            throw new ForbiddenException("Role can't be unassigned — user has no other roles");
+        }
+
         roleUserService.deleteRoleForUser(roleOfUserOrganization);
 
         roleChangedProducer.sendOrgUserRoleChanged(organization, organizationUser);
     }
-
 
 }

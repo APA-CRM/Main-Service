@@ -150,6 +150,27 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("Remove role for user in organization expected success response")
     public void removeRoleForUserOrganizationExpectedSuccess() {
+        final Long userId = 3L;
+        final Long organizationId = 100L;
+        final Long roleId = 4L;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .when()
+                .delete(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
+                        organizationId, userId, roleId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+    }
+
+    @Test
+    @DisplayName("Remove role for user in organization when user has only one role expected success response")
+    public void removeRoleForUserOrganizationWhenUserHasOnlyOneRoleExpectedSuccess() {
         final Long userId = 1L;
         final Long organizationId = 100L;
         final Long roleId = 1L;
@@ -164,7 +185,8 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .then()
                 .log().all()
                 .assertThat()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("message", is("Role can't be unassigned — user has no other roles"));
 
     }
 
