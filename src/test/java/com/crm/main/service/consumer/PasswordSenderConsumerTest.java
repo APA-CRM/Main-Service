@@ -1,6 +1,6 @@
 package com.crm.main.service.consumer;
 
-import com.crm.main.controller.BaseIntegrationTest;
+import com.crm.main.BaseIntegrationTest;
 import com.crm.sharedlib.dto.amqp.SendPasswordByEmailEvent;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.DisplayName;

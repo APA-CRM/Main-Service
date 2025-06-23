@@ -1,6 +1,6 @@
 package com.crm.main.controller.internal;
 
-import com.crm.main.controller.BaseIntegrationTest;
+import com.crm.main.BaseIntegrationTest;
 import com.crm.sharedlib.consts.CrmConstants;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;

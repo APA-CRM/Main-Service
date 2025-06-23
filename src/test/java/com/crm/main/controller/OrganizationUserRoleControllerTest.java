@@ -1,5 +1,6 @@
 package com.crm.main.controller;
 
+import com.crm.main.BaseIntegrationTest;
 import com.crm.main.feign.AuthClient;
 import com.crm.sharedlib.dto.response.RoleResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -1,8 +1,8 @@
 package com.crm.main.controller;
 
+import com.crm.main.BaseIntegrationTest;
 import com.crm.main.feign.AuthClient;
 import com.crm.sharedlib.dto.request.ResourceWithActionsRequest;
-import com.crm.sharedlib.dto.request.RoleFilterRequest;
 import com.crm.sharedlib.dto.request.RoleRequest;
 import com.crm.sharedlib.dto.response.RestResponsePage;
 import com.crm.sharedlib.dto.response.RoleResponse;

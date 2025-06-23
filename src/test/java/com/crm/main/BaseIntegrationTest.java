@@ -1,4 +1,4 @@
-package com.crm.main.controller;
+package com.crm.main;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
