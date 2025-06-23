@@ -55,6 +55,8 @@ public class InvitationProcessorService {
         OrganizationInvitation invitation =
                 invitationService.getOrganizationInvitationOrThrowException(invitationId);
 
+        checkStatusOfInvitationForUpdate(invitation);
+
         if (!invitation.getUserId().equals(userId)) {
             throw new ForbiddenException("You can't accept this invitation");
         }
@@ -68,4 +70,12 @@ public class InvitationProcessorService {
         return invitationService.saveOrganizationInvitation(invitation);
     }
 
+    private void checkStatusOfInvitationForUpdate(OrganizationInvitation invitation) {
+        if (invitation.getStatus() == InvitationStatus.ACCEPTED) {
+            throw new ConflictException("Invitation is already accepted");
+        }
+        if (invitation.getStatus() == InvitationStatus.DECLINED) {
+            throw new ConflictException("Invitation is already declined");
+        }
+    }
 }
