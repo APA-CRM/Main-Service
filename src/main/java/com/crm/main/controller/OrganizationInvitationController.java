@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 
 @RestController
@@ -25,6 +27,22 @@ public class OrganizationInvitationController {
             @RequestHeader(USER_ID_HEADER_NAME) Long userId
     ) {
         return facade.inviteUserToOrganization(request, organizationId, userId);
+    }
+
+    @PutMapping("/invitations/{invitationId}/accept")
+    public OrganizationInvitationResponse acceptInvitation(
+            @PathVariable("invitationId") UUID invitationId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+    ) {
+        return facade.acceptInvitation(invitationId, userId);
+    }
+
+    @PutMapping("/invitations/{invitationId}/decline")
+    public OrganizationInvitationResponse declineInvitation(
+            @PathVariable("invitationId") UUID invitationId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+    ) {
+        return facade.declineInvitation(invitationId, userId);
     }
 
 }
