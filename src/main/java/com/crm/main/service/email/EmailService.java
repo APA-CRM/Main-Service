@@ -18,19 +18,18 @@ public class EmailService {
     public void sendEmail(String to, String text, String subject) {
         MimeMessage message = mailSender.createMimeMessage();
 
-        MimeMessageHelper helper = null;
-
         try {
-            helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setSubject(subject);
             helper.setTo(to);
             helper.setText(text, true);
+
+            mailSender.send(message);
         } catch (MessagingException e) {
             log.error("Something went wrong while sending email", e);
             throw new RuntimeException(e);
         }
 
-        mailSender.send(message);
 
         log.info("Email successfully sent");
     }
