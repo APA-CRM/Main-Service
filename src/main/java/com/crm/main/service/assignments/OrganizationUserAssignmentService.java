@@ -7,8 +7,6 @@ import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationRoleUserService;
 import com.crm.main.service.OrganizationUserService;
-import com.crm.main.service.wrapper.UserClientWrapper;
-import com.crm.sharedlib.dto.response.UserResponse;
 import com.crm.sharedlib.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,11 +22,9 @@ public class OrganizationUserAssignmentService {
     private final OrganizationRoleService roleService;
     private final OrganizationRoleUserService roleUserService;
 
-    private final UserClientWrapper userClientWrapper;
-
     @Transactional
-    // TODO: Notify user about adding to organization by email
-    public UserResponse addUserToOrganization(
+    // TODO: Notify users of organization about adding new user to organization
+    public void addUserToOrganization(
             Organization organization,
             Long userId
     ) {
@@ -39,8 +35,6 @@ public class OrganizationUserAssignmentService {
             throw new ConflictException("User already in organization");
         }
 
-        UserResponse user = userClientWrapper.getUserById(userId);
-
         OrganizationUser userOfOrganization =
                 organizationUserService.createUserOfOrganization(organization, userId);
 
@@ -48,8 +42,6 @@ public class OrganizationUserAssignmentService {
                 roleService.getOrganizationRoleByRoleType(organization, RoleType.MEMBER);
 
         roleUserService.createRoleForOrganizationUser(memberRole, userOfOrganization);
-
-        return user;
     }
 
     @Transactional

@@ -2,7 +2,6 @@ package com.crm.main.controller;
 
 import com.crm.main.dto.request.UserAndRolesFilterRequest;
 import com.crm.main.facade.OrganizationUsersFacade;
-import com.crm.sharedlib.dto.response.UserResponse;
 import com.crm.sharedlib.dto.response.UserWithRoleResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +23,6 @@ public class OrganizationUsersController {
     ) {
         return facade.filterOrganizationUsers(
                 request, organizationId
-        );
-    }
-
-    @PutMapping("/{organizationId}/users/{userId}")
-    public UserResponse addUserToOrganization(
-            @PathVariable("organizationId") Long organizationId,
-            @PathVariable("userId") Long userIdToAddToOrganization
-    ) {
-        return facade.addUserToOrganization(
-                organizationId,
-                userIdToAddToOrganization
         );
     }
 

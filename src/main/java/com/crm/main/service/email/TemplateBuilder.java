@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class TemplateBuilder {
@@ -17,8 +19,18 @@ public class TemplateBuilder {
         Context context = new Context();
         context.setVariable("password", password);
 
-        return templateEngine.process("emailTemplate", context);
+        return templateEngine.process("passwordEmailTemplate", context);
 
+    }
+
+    public String buildInvitationEmail(UUID invitationId, String organizationName, String frontendUrl) {
+        Context context = new Context();
+
+        context.setVariable("organizationName", organizationName);
+        context.setVariable("invitationId", invitationId);
+        context.setVariable("frontendUrl", frontendUrl);
+
+        return templateEngine.process("invitationEmailTemplate.html", context);
     }
 
 }

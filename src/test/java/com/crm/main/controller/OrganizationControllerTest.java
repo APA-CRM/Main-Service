@@ -1,5 +1,6 @@
 package com.crm.main.controller;
 
+import com.crm.main.BaseIntegrationTest;
 import com.crm.main.dto.request.CreateOrganizationRequest;
 import com.crm.main.feign.AuthClient;
 import com.crm.sharedlib.consts.CrmConstants;

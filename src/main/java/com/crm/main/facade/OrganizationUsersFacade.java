@@ -6,7 +6,6 @@ import com.crm.main.service.OrganizationService;
 import com.crm.main.service.assignments.OrganizationUserAssignmentService;
 import com.crm.main.service.filter.OrganizationUsersFilterService;
 import com.crm.sharedlib.annotations.Facade;
-import com.crm.sharedlib.dto.response.UserResponse;
 import com.crm.sharedlib.dto.response.UserWithRoleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
@@ -28,16 +27,6 @@ public class OrganizationUsersFacade {
                 organizationService.getOrganizationOrThrowException(organizationId);
 
         return filterService.filterOrganizationUsers(organization, request);
-    }
-
-    public UserResponse addUserToOrganization(
-            Long organizationId,
-            Long userIdToAddToOrganization
-    ) {
-        Organization organization =
-                organizationService.getOrganizationOrThrowException(organizationId);
-
-        return assignmentService.addUserToOrganization(organization, userIdToAddToOrganization);
     }
 
     public void removeUserFromOrganization(

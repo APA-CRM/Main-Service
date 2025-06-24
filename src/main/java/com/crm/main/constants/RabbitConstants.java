@@ -6,4 +6,6 @@ public class RabbitConstants {
 
     public static final String ORGANIZATION_USER_ROLE_CHANGE_ROUTING_KEY = "org-user.role-changes";
 
+    public static final String ORGANIZATION_INVITATION_CREATED = "org-invitation.created";
+
 }

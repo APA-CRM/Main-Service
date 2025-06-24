@@ -17,6 +17,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new OrganizationAccessInterceptor(userService))
                 .addPathPatterns("/api/organizations/*/**")
-                .excludePathPatterns("/api/organizations/*/preview");
+                .excludePathPatterns("/api/organizations/*/preview", "/api/organizations/invitations/**");
     }
 }

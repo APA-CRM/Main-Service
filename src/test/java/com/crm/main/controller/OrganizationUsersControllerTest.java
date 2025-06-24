@@ -1,8 +1,8 @@
 package com.crm.main.controller;
 
+import com.crm.main.BaseIntegrationTest;
 import com.crm.main.feign.AuthClient;
 import com.crm.sharedlib.dto.response.RestResponsePage;
-import com.crm.sharedlib.dto.response.UserResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,8 @@ import java.util.List;
 import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
 import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 
 @Sql(scripts = "classpath:sql/insertTestOrganizations.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:sql/deleteTestOrganization.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -158,87 +159,6 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .body("page.number", is(0))
                 .body("page.totalElements", is(0))
                 .body("page.totalPages", is(0));
-    }
-
-    @Test
-    @DisplayName("Add user to organization expected success response")
-    public void addUserToOrganizationExpectedSuccess() throws JsonProcessingException {
-        final long organizationId = 100;
-
-        final Long userId = 4L;
-
-        final String responseString = """
-                {
-                        "id": 4,
-                        "login": "LoginUser",
-                        "email": "test2@gmail.com",
-                        "fullName": "Serious Sam",
-                        "firstName": "Serious",
-                        "lastName": "Sam",
-                        "createdAt": "2025-05-18T13:52:33.421772Z",
-                        "updateAt": "2025-05-18T13:52:33.421772Z"
-                    }
-                """;
-
-        UserResponse userResponse = objectMapper.readValue(responseString, UserResponse.class);
-
-        Mockito.when(authClient.getUserById(Mockito.any()))
-                .thenReturn(userResponse);
-
-        given()
-                .contentType(ContentType.JSON)
-                .header(USER_ID_HEADER_NAME, 1)
-                .header(ORGANIZATION_ID_HEADER_NAME, 100)
-                .when()
-                .put(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
-                .then()
-                .log().all()
-                .assertThat()
-                .statusCode(HttpStatus.OK.value())
-                .body("id", is(userId.intValue()))
-                .body("login", notNullValue())
-                .body("email", notNullValue())
-                .body("fullName", is("Serious Sam"))
-                .body("firstName", is("Serious"))
-                .body("lastName", is("Sam"));
-    }
-
-    @Test
-    @DisplayName("Add user to organization expected success response")
-    public void addUserToOrganizationWhenUserAlreadyInOrganizationExpectedSuccess() throws JsonProcessingException {
-        final long organizationId = 100;
-
-        final Long userId = 1L;
-
-        final String responseString = """
-                {
-                        "id": 4,
-                        "login": "LoginUser",
-                        "email": "test2@gmail.com",
-                        "fullName": "Serious Sam",
-                        "firstName": "Serious",
-                        "lastName": "Sam",
-                        "createdAt": "2025-05-18T13:52:33.421772Z",
-                        "updateAt": "2025-05-18T13:52:33.421772Z"
-                    }
-                """;
-
-        UserResponse userResponse = objectMapper.readValue(responseString, UserResponse.class);
-
-        Mockito.when(authClient.getUserById(Mockito.any()))
-                .thenReturn(userResponse);
-
-        given()
-                .contentType(ContentType.JSON)
-                .header(USER_ID_HEADER_NAME, 1)
-                .header(ORGANIZATION_ID_HEADER_NAME, 100)
-                .when()
-                .put(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
-                .then()
-                .log().all()
-                .assertThat()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .body("message", is("User already in organization"));
     }
 
     @Test

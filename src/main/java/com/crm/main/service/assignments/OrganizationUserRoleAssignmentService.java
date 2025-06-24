@@ -56,7 +56,7 @@ public class OrganizationUserRoleAssignmentService {
         OrganizationRoleUser roleOfUserOrganization =
                 roleUserService.getRoleOfUserOrganization(role, organizationUser);
 
-        if(organizationUser.getOrganizationRoleUsers().size() == 1) {
+        if (organizationUser.getOrganizationRoleUsers().size() == 1) {
             throw new ForbiddenException("Role can't be unassigned — user has no other roles");
         }
 
