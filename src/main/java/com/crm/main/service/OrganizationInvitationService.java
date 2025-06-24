@@ -4,6 +4,7 @@ import com.crm.main.enums.InvitationStatus;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationInvitation;
 import com.crm.main.persistance.repository.OrganizationInvitationRepository;
+import com.crm.sharedlib.exception.ConflictException;
 import com.crm.sharedlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,6 +29,14 @@ public class OrganizationInvitationService {
             Organization organization, Long userId,
             Long invitorId
     ) {
+        Optional<OrganizationInvitation> existingInvitation =
+                repository
+                        .findByUserIdAndOrganizationAndStatus(userId, organization, InvitationStatus.PENDING);
+
+        if (existingInvitation.isPresent()) {
+            throw new ConflictException("Invitation is already created");
+        }
+
         OrganizationInvitation invitation = new OrganizationInvitation();
 
         invitation.setStatus(InvitationStatus.PENDING);

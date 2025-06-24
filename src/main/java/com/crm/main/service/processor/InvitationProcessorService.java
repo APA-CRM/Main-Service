@@ -7,7 +7,6 @@ import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationInvitationService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.InvitationCreatedProducer;
-import com.crm.main.service.wrapper.UserClientWrapper;
 import com.crm.sharedlib.dto.response.UserResponse;
 import com.crm.sharedlib.exception.ConflictException;
 import com.crm.sharedlib.exception.ForbiddenException;
@@ -28,13 +27,13 @@ public class InvitationProcessorService {
 
     private final InvitationCreatedProducer invitationCreatedProducer;
 
-    private final UserClientWrapper userClientWrapper;
-
     @Transactional
     public OrganizationInvitation inviteUserToOrganization(
-            Organization organization, Long userId,
+            Organization organization, UserResponse user,
             Long invitorId
     ) {
+
+        Long userId = user.getId();
 
         Optional<OrganizationUser> userOptional =
                 userService.getOrganizationUserOptional(organization, userId);
@@ -44,8 +43,6 @@ public class InvitationProcessorService {
         }
 
         OrganizationInvitation invitation = invitationService.createInvitation(organization, userId, invitorId);
-
-        UserResponse user = userClientWrapper.getUserById(userId);
 
         invitationCreatedProducer
                 .notifyUserAboutInvitationOfOrganization(invitation, user.getEmail());

@@ -8,7 +8,9 @@ import com.crm.main.persistance.entity.OrganizationInvitation;
 import com.crm.main.service.OrganizationService;
 import com.crm.main.service.assignments.OrganizationUserAssignmentService;
 import com.crm.main.service.processor.InvitationProcessorService;
+import com.crm.main.service.wrapper.UserClientWrapper;
 import com.crm.sharedlib.annotations.Facade;
+import com.crm.sharedlib.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
@@ -21,6 +23,8 @@ public class OrganizationInvitationFacade {
     private final OrganizationUserAssignmentService assignmentService;
     private final OrganizationService organizationService;
 
+    private final UserClientWrapper userClientWrapper;
+
     private final OrganizationInvitationMapper mapper;
 
     public OrganizationInvitationResponse inviteUserToOrganization(
@@ -30,8 +34,10 @@ public class OrganizationInvitationFacade {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
 
+        UserResponse user = userClientWrapper.getUserById(request.getUserId());
+
         OrganizationInvitation invitation = invitationProcessorService.inviteUserToOrganization(
-                organization, request.getUserId(), invitorId
+                organization, user, invitorId
         );
 
         return mapper.toDto(invitation);

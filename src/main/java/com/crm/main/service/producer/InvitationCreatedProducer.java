@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import static com.crm.main.constants.RabbitConstants.MAIN_SERVICE_EXCHANGER_NAME;
 import static com.crm.main.constants.RabbitConstants.ORGANIZATION_INVITATION_CREATED;
 
 @Service
@@ -21,7 +22,7 @@ public class InvitationCreatedProducer {
         event.setInvitationId(invitation.getId());
         event.setOrganizationName(invitation.getOrganization().getName());
 
-        rabbitTemplate.convertAndSend(ORGANIZATION_INVITATION_CREATED, event);
+        rabbitTemplate.convertAndSend(MAIN_SERVICE_EXCHANGER_NAME, ORGANIZATION_INVITATION_CREATED, event);
     }
 
 }
