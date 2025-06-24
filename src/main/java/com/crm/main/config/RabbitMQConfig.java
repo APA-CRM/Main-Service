@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.crm.main.constants.RabbitConstants.MAIN_SERVICE_EXCHANGER_NAME;
-import static com.crm.main.constants.RabbitConstants.ORGANIZATION_USER_ROLE_CHANGE_ROUTING_KEY;
-import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_USER_ROLES_SYNC_QUEUE;
-import static com.crm.sharedlib.consts.CrmConstants.SEND_PASSWORD_QUEUE;
+import static com.crm.main.constants.RabbitConstants.*;
+import static com.crm.sharedlib.consts.CrmConstants.*;
 
 @Configuration
 @EnableRabbit
@@ -68,17 +66,17 @@ public class RabbitMQConfig {
     }
 
 
-    @Bean
-    public Queue sendPasswordQueue() {
-        return QueueBuilder
-                .durable(SEND_PASSWORD_QUEUE)
-                .build();
-    }
-
     @Configuration
     public class ProducerConfig {
 
-        @Bean("mainServiceTopicExchanger")
+        @Bean
+        public Queue sendPasswordQueue() {
+            return QueueBuilder
+                    .durable(SEND_PASSWORD_QUEUE)
+                    .build();
+        }
+
+        @Bean
         public TopicExchange mainServiceTopicExchanger() {
             return ExchangeBuilder
                     .topicExchange(MAIN_SERVICE_EXCHANGER_NAME)
@@ -86,7 +84,7 @@ public class RabbitMQConfig {
                     .build();
         }
 
-        @Bean("orgUserSyncRoles")
+        @Bean
         public Queue orgUserSyncRoles() {
             return QueueBuilder
                     .durable(ORGANIZATION_USER_ROLES_SYNC_QUEUE)
@@ -103,6 +101,24 @@ public class RabbitMQConfig {
                     .bind(orgUserSyncRoles)
                     .to(mainServiceTopicExchanger)
                     .with(ORGANIZATION_USER_ROLE_CHANGE_ROUTING_KEY);
+        }
+
+        @Bean
+        public Queue sendInvitationOfOrganizationQueue() {
+            return QueueBuilder
+                    .durable(SEND_INVITATION_OF_ORGANIZATION)
+                    .build();
+        }
+
+        @Bean
+        public Binding invitationCreatedBinding(
+                TopicExchange mainServiceTopicExchanger,
+                Queue sendInvitationOfOrganizationQueue
+        ) {
+            return BindingBuilder
+                    .bind(sendInvitationOfOrganizationQueue)
+                    .to(mainServiceTopicExchanger)
+                    .with(ORGANIZATION_INVITATION_CREATED);
         }
 
     }
