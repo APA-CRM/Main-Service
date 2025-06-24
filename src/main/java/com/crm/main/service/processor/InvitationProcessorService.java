@@ -56,6 +56,7 @@ public class InvitationProcessorService {
     }
 
     @Transactional
+    // TODO: Notify invitor about declining his invitation
     public OrganizationInvitation declineInvitation(UUID invitationId, Long userId) {
         return getAndUpdateInvitationStatus(invitationId, userId, InvitationStatus.DECLINED);
     }

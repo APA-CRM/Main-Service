@@ -4,17 +4,22 @@ import com.crm.main.BaseIntegrationTest;
 import com.crm.main.dto.request.OrganizationInvitationRequest;
 import com.crm.main.enums.InvitationStatus;
 import com.crm.main.enums.RoleType;
+import com.crm.main.feign.AuthClient;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationRoleUser;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.persistance.repository.OrganizationRoleUserRepository;
 import com.crm.main.persistance.repository.OrganizationUserRepository;
+import com.crm.sharedlib.dto.response.UserResponse;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -39,6 +44,12 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
 
     private final static String BASE_URI = "/api/organizations";
 
+    @MockitoBean
+    private RabbitTemplate rabbitTemplate;
+
+    @MockitoBean
+    private AuthClient authClient;
+
     @Autowired
     private OrganizationUserRepository userRepository;
 
@@ -51,6 +62,19 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
         final int organizationId = 100;
 
         OrganizationInvitationRequest request = new OrganizationInvitationRequest(5L);
+
+        UserResponse response = new UserResponse();
+
+        response.setEmail("test@gmail.com");
+
+        Mockito.when(authClient.getUserById(Mockito.anyLong()))
+                .thenAnswer(invocation -> {
+                    Long userId = invocation.getArgument(0);
+
+                    response.setId(userId);
+
+                    return response;
+                });
 
         given()
                 .contentType(ContentType.JSON)
@@ -82,6 +106,19 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
 
         OrganizationInvitationRequest request = new OrganizationInvitationRequest(3L);
 
+        UserResponse response = new UserResponse();
+
+        response.setEmail("test@gmail.com");
+
+        Mockito.when(authClient.getUserById(Mockito.anyLong()))
+                .thenAnswer(invocation -> {
+                    Long userId = invocation.getArgument(0);
+
+                    response.setId(userId);
+
+                    return response;
+                });
+
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
@@ -94,6 +131,41 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .statusCode(HttpStatus.CONFLICT.value())
                 .assertThat()
                 .body("message", is("User already in organization"));
+
+    }
+
+    @Test
+    @DisplayName("Invite user to organization when invitation already exists expected conflict")
+    public void inviteUserToOrganizationWhenInvitationAlreadyExistsExpectedConflict() {
+        final int organizationId = 100;
+
+        OrganizationInvitationRequest request = new OrganizationInvitationRequest(10L);
+
+        UserResponse response = new UserResponse();
+
+        response.setEmail("test@gmail.com");
+
+        Mockito.when(authClient.getUserById(Mockito.anyLong()))
+                .thenAnswer(invocation -> {
+                    Long userId = invocation.getArgument(0);
+
+                    response.setId(userId);
+
+                    return response;
+                });
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .body(request)
+                .when()
+                .post(BASE_URI + "/{organizationId}/invitations", organizationId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .assertThat()
+                .body("message", is("Invitation is already created"));
 
     }
 
