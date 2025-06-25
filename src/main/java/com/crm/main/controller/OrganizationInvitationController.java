@@ -18,6 +18,13 @@ public class OrganizationInvitationController {
 
     private final OrganizationInvitationFacade facade;
 
+    @GetMapping("/invitations/{invitationId}")
+    public OrganizationInvitationResponse getInvitation(
+            @PathVariable("invitationId") UUID invitationId
+    ) {
+        return facade.getInvitation(invitationId);
+    }
+
     @PostMapping("/{organizationId}/invitations")
     public OrganizationInvitationResponse inviteUserToOrganization(
             @Valid
@@ -29,7 +36,7 @@ public class OrganizationInvitationController {
         return facade.inviteUserToOrganization(request, organizationId, userId);
     }
 
-    @PutMapping("/invitations/{invitationId}/accept")
+    @PatchMapping("/invitations/{invitationId}/accept")
     public OrganizationInvitationResponse acceptInvitation(
             @PathVariable("invitationId") UUID invitationId,
             @RequestHeader(USER_ID_HEADER_NAME) Long userId
@@ -37,7 +44,7 @@ public class OrganizationInvitationController {
         return facade.acceptInvitation(invitationId, userId);
     }
 
-    @PutMapping("/invitations/{invitationId}/decline")
+    @PatchMapping("/invitations/{invitationId}/decline")
     public OrganizationInvitationResponse declineInvitation(
             @PathVariable("invitationId") UUID invitationId,
             @RequestHeader(USER_ID_HEADER_NAME) Long userId

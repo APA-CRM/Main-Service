@@ -5,6 +5,7 @@ import com.crm.main.dto.response.OrganizationInvitationResponse;
 import com.crm.main.mapper.OrganizationInvitationMapper;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationInvitation;
+import com.crm.main.service.OrganizationInvitationService;
 import com.crm.main.service.OrganizationService;
 import com.crm.main.service.assignments.OrganizationUserAssignmentService;
 import com.crm.main.service.processor.InvitationProcessorService;
@@ -22,10 +23,18 @@ public class OrganizationInvitationFacade {
     private final InvitationProcessorService invitationProcessorService;
     private final OrganizationUserAssignmentService assignmentService;
     private final OrganizationService organizationService;
+    private final OrganizationInvitationService invitationService;
 
     private final UserClientWrapper userClientWrapper;
 
     private final OrganizationInvitationMapper mapper;
+
+    public OrganizationInvitationResponse getInvitation(UUID invitationId) {
+        OrganizationInvitation invitation =
+                invitationService.getOrganizationInvitationOrThrowException(invitationId);
+
+        return mapper.toDto(invitation);
+    }
 
     public OrganizationInvitationResponse inviteUserToOrganization(
             OrganizationInvitationRequest request,

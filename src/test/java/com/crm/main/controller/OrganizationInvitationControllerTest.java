@@ -178,7 +178,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 10)
                 .when()
-                .put(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
+                .patch(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -217,7 +217,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 11)
                 .when()
-                .put(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
+                .patch(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value())
@@ -235,7 +235,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 10)
                 .when()
-                .put(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
+                .patch(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value())
@@ -252,7 +252,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 12)
                 .when()
-                .put(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
+                .patch(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.CONFLICT.value())
@@ -269,7 +269,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 13)
                 .when()
-                .put(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
+                .patch(BASE_URI + "/invitations/{invitationId}/accept", invitationId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.CONFLICT.value())
@@ -286,7 +286,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 10)
                 .when()
-                .put(BASE_URI + "/invitations/{invitationId}/decline", invitationId)
+                .patch(BASE_URI + "/invitations/{invitationId}/decline", invitationId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -295,6 +295,29 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .body("organization", notNullValue())
                 .body("userId", is(10))
                 .body("status", is(InvitationStatus.DECLINED.name()))
+                .body("invitorId", is(1))
+                .body("expiredAt", notNullValue());
+
+    }
+
+    @Test
+    @DisplayName("Get invitation expected success response")
+    public void getInvitationExpectedSuccess() {
+        final String invitationId = "6d2718fd-d2b0-4ed2-9074-9bcc2f7c28d1";
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 10)
+                .when()
+                .get(BASE_URI + "/invitations/{invitationId}", invitationId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("id", notNullValue())
+                .body("organization", notNullValue())
+                .body("userId", is(10))
+                .body("status", is(InvitationStatus.PENDING.name()))
                 .body("invitorId", is(1))
                 .body("expiredAt", notNullValue());
 
