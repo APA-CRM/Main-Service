@@ -61,7 +61,8 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
     public void inviteUserToOrganizationExpectedSuccess() {
         final int organizationId = 100;
 
-        OrganizationInvitationRequest request = new OrganizationInvitationRequest(5L);
+        OrganizationInvitationRequest request = new OrganizationInvitationRequest();
+        request.setUserId(5L);
 
         UserResponse response = new UserResponse();
 
@@ -93,6 +94,53 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .body("userId", is(5))
                 .body("status", is(InvitationStatus.PENDING.name()))
                 .body("invitorId", is(1))
+                .body("roleId", is(2))
+                .body("expiredAt", notNullValue())
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue());
+
+    }
+
+    @Test
+    @DisplayName("Invite user to organization when role id is specified expected success")
+    public void inviteUserToOrganizationWhenRoleIdIsSpecifiedExpectedSuccess() {
+        final int organizationId = 100;
+
+        OrganizationInvitationRequest request = new OrganizationInvitationRequest();
+        request.setUserId(5L);
+        request.setRoleId(4L);
+
+        UserResponse response = new UserResponse();
+
+        response.setEmail("test@gmail.com");
+
+        Mockito.when(authClient.getUserById(Mockito.anyLong()))
+                .thenAnswer(invocation -> {
+                    Long userId = invocation.getArgument(0);
+
+                    response.setId(userId);
+
+                    return response;
+                });
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .body(request)
+                .when()
+                .post(BASE_URI + "/{organizationId}/invitations", organizationId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("id", notNullValue())
+                .body("organization", notNullValue())
+                .body("organization.id", is(organizationId))
+                .body("userId", is(request.getUserId().intValue()))
+                .body("status", is(InvitationStatus.PENDING.name()))
+                .body("invitorId", is(1))
+                .body("roleId", is(request.getRoleId().intValue()))
                 .body("expiredAt", notNullValue())
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
@@ -104,7 +152,9 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
     public void inviteUserToOrganizationWhenUserAlreadyInOrganizationExpectedConflict() {
         final int organizationId = 100;
 
-        OrganizationInvitationRequest request = new OrganizationInvitationRequest(3L);
+        OrganizationInvitationRequest request = new OrganizationInvitationRequest();
+
+        request.setUserId(3L);
 
         UserResponse response = new UserResponse();
 
@@ -139,7 +189,8 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
     public void inviteUserToOrganizationWhenInvitationAlreadyExistsExpectedConflict() {
         final int organizationId = 100;
 
-        OrganizationInvitationRequest request = new OrganizationInvitationRequest(10L);
+        OrganizationInvitationRequest request = new OrganizationInvitationRequest();
+        request.setUserId(10L);
 
         UserResponse response = new UserResponse();
 
@@ -171,7 +222,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
 
     @Test
     @DisplayName("Accept invitation of organization expected success")
-    public void acceptInvitationOfOrganizationExpectedSuccess() {
+    public void acceptInvitationOfOrganizationWhenRoleIsMemberExpectedSuccess() {
         final String invitationId = "6d2718fd-d2b0-4ed2-9074-9bcc2f7c28d1";
 
         JsonPath jsonPath = given()
@@ -187,6 +238,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .body("organization", notNullValue())
                 .body("userId", is(10))
                 .body("status", is(InvitationStatus.ACCEPTED.name()))
+                .body("roleId", is(2))
                 .body("invitorId", is(1))
                 .body("expiredAt", notNullValue())
                 .extract().jsonPath();
@@ -295,6 +347,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .body("organization", notNullValue())
                 .body("userId", is(10))
                 .body("status", is(InvitationStatus.DECLINED.name()))
+                .body("roleId", is(2))
                 .body("invitorId", is(1))
                 .body("expiredAt", notNullValue());
 
@@ -318,6 +371,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .body("organization", notNullValue())
                 .body("userId", is(10))
                 .body("status", is(InvitationStatus.PENDING.name()))
+                .body("roleId", is(2))
                 .body("invitorId", is(1))
                 .body("expiredAt", notNullValue());
 
