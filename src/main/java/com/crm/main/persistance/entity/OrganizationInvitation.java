@@ -34,6 +34,9 @@ public class OrganizationInvitation {
     @Enumerated(EnumType.STRING)
     private InvitationStatus status;
 
+    @ManyToOne(optional = false)
+    private OrganizationRole role;
+
     private Long invitorId;
 
     private Instant expiredAt;

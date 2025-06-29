@@ -3,6 +3,7 @@ package com.crm.main.mapper;
 import com.crm.main.dto.response.OrganizationInvitationResponse;
 import com.crm.main.persistance.entity.OrganizationInvitation;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 @Mapper(
@@ -11,6 +12,7 @@ import org.mapstruct.MappingConstants;
 )
 public interface OrganizationInvitationMapper {
 
+    @Mapping(target = "roleId", source = "role.roleId")
     OrganizationInvitationResponse toDto(OrganizationInvitation invitation);
 
 }

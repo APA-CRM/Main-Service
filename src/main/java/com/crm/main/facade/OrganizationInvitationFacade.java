@@ -46,7 +46,7 @@ public class OrganizationInvitationFacade {
         UserResponse user = userClientWrapper.getUserById(request.getUserId());
 
         OrganizationInvitation invitation = invitationProcessorService.inviteUserToOrganization(
-                organization, user, invitorId
+                organization, user, invitorId, request.getRoleId()
         );
 
         return mapper.toDto(invitation);
@@ -56,7 +56,7 @@ public class OrganizationInvitationFacade {
         OrganizationInvitation invitation =
                 invitationProcessorService.acceptInvitation(invitationId, userId);
 
-        assignmentService.addUserToOrganization(invitation.getOrganization(), userId);
+        assignmentService.addUserToOrganization(invitation.getOrganization(), invitation.getRole(), userId);
 
         return mapper.toDto(invitation);
     }

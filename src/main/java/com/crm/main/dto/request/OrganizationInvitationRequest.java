@@ -1,5 +1,6 @@
 package com.crm.main.dto.request;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,5 +15,8 @@ public class OrganizationInvitationRequest {
 
     @NotNull(message = "User id cannot be null")
     private Long userId;
+
+    @Nullable
+    private Long roleId;
 
 }
