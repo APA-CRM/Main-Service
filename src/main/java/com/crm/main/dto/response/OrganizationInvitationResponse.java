@@ -25,6 +25,8 @@ public class OrganizationInvitationResponse {
 
     private Long invitorId;
 
+    private Long roleId;
+
     private Instant expiredAt;
 
     private Instant createdAt;

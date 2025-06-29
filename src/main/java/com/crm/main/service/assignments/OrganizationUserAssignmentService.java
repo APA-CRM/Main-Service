@@ -1,10 +1,8 @@
 package com.crm.main.service.assignments;
 
-import com.crm.main.enums.RoleType;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationUser;
-import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationRoleUserService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.sharedlib.exception.ConflictException;
@@ -19,13 +17,13 @@ import java.util.Optional;
 public class OrganizationUserAssignmentService {
 
     private final OrganizationUserService organizationUserService;
-    private final OrganizationRoleService roleService;
     private final OrganizationRoleUserService roleUserService;
 
     @Transactional
     // TODO: Notify users of organization about adding new user to organization
     public void addUserToOrganization(
             Organization organization,
+            OrganizationRole role,
             Long userId
     ) {
         Optional<OrganizationUser> organizationUser =
@@ -38,10 +36,7 @@ public class OrganizationUserAssignmentService {
         OrganizationUser userOfOrganization =
                 organizationUserService.createUserOfOrganization(organization, userId);
 
-        OrganizationRole memberRole =
-                roleService.getOrganizationRoleByRoleType(organization, RoleType.MEMBER);
-
-        roleUserService.createRoleForOrganizationUser(memberRole, userOfOrganization);
+        roleUserService.createRoleForOrganizationUser(role, userOfOrganization);
     }
 
     @Transactional

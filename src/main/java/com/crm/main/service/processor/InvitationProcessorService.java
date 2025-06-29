@@ -1,10 +1,13 @@
 package com.crm.main.service.processor;
 
 import com.crm.main.enums.InvitationStatus;
+import com.crm.main.enums.RoleType;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationInvitation;
+import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationInvitationService;
+import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.InvitationCreatedProducer;
 import com.crm.sharedlib.dto.response.UserResponse;
@@ -18,21 +21,23 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class InvitationProcessorService {
 
     private final OrganizationInvitationService invitationService;
     private final OrganizationUserService userService;
+    private final OrganizationRoleService roleService;
 
     private final InvitationCreatedProducer invitationCreatedProducer;
 
     @Transactional
     public OrganizationInvitation inviteUserToOrganization(
             Organization organization, UserResponse user,
-            Long invitorId
+            Long invitorId, Long roleId
     ) {
-
         Long userId = user.getId();
 
         Optional<OrganizationUser> userOptional =
@@ -42,7 +47,17 @@ public class InvitationProcessorService {
             throw new ConflictException("User already in organization");
         }
 
-        OrganizationInvitation invitation = invitationService.createInvitation(organization, userId, invitorId);
+        OrganizationRole role;
+
+        if (isNull(roleId)) {
+            role = roleService.getOrganizationRoleByRoleType(organization, RoleType.MEMBER);
+        } else {
+            role = roleService.getOrganizationRole(organization, roleId);
+        }
+
+        OrganizationInvitation invitation = invitationService.createInvitation(
+                organization, userId, invitorId, role
+        );
 
         invitationCreatedProducer
                 .notifyUserAboutInvitationOfOrganization(invitation, user.getEmail());

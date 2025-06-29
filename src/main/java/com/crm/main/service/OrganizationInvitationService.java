@@ -3,6 +3,7 @@ package com.crm.main.service;
 import com.crm.main.enums.InvitationStatus;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationInvitation;
+import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.repository.OrganizationInvitationRepository;
 import com.crm.sharedlib.exception.ConflictException;
 import com.crm.sharedlib.exception.NotFoundException;
@@ -27,7 +28,7 @@ public class OrganizationInvitationService {
     @Transactional
     public OrganizationInvitation createInvitation(
             Organization organization, Long userId,
-            Long invitorId
+            Long invitorId, OrganizationRole role
     ) {
         Optional<OrganizationInvitation> existingInvitation =
                 repository
@@ -43,6 +44,7 @@ public class OrganizationInvitationService {
         invitation.setOrganization(organization);
         invitation.setUserId(userId);
         invitation.setInvitorId(invitorId);
+        invitation.setRole(role);
         invitation.setExpiredAt(Instant.now().plusSeconds(invitationExpirationTime));
 
         return repository.save(invitation);
