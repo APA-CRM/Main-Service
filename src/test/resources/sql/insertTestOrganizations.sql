@@ -1,10 +1,10 @@
 INSERT INTO organization(
     id, name, address, city,
-    country, email
+    country, email, description
 ) VALUES
 (
     100, 'NewPoshta', 'Criminal 52', 'Kyiv',
-    'Ukraine', 'avraamkablyk@gmail.com'
+    'Ukraine', 'avraamkablyk@gmail.com', 'JavaRush'
 );
 
 INSERT INTO organization_user(
