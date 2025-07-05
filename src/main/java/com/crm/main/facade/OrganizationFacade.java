@@ -1,6 +1,6 @@
 package com.crm.main.facade;
 
-import com.crm.main.dto.request.CreateOrganizationRequest;
+import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.dto.response.OrganizationPreviewResponse;
 import com.crm.main.dto.response.OrganizationResponse;
 import com.crm.main.mapper.OrganizationMapper;
@@ -44,7 +44,7 @@ public class OrganizationFacade {
     }
 
     public OrganizationResponse createOrganization(
-            CreateOrganizationRequest request,
+            OrganizationRequest request,
             Long userId
     ) {
         Organization organization = organizationCreatorService
@@ -53,4 +53,19 @@ public class OrganizationFacade {
         return organizationMapper.toDto(organization);
     }
 
+    public OrganizationResponse getOrganizationById(Long organizationId) {
+        Organization organization =
+                organizationService.getOrganizationOrThrowException(organizationId);
+
+        return organizationMapper.toDto(organization);
+    }
+
+    public OrganizationResponse updateOrganizationById(
+            OrganizationRequest request,
+            Long organizationId
+    ) {
+        Organization organization = organizationService.updateOrganization(organizationId, request);
+
+        return organizationMapper.toDto(organization);
+    }
 }

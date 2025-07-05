@@ -1,6 +1,6 @@
 package com.crm.main.service;
 
-import com.crm.main.dto.request.CreateOrganizationRequest;
+import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.mapper.OrganizationMapper;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.repository.OrganizationRepository;
@@ -23,8 +23,17 @@ public class OrganizationService {
     }
 
     @Transactional
-    public Organization createOrganization(CreateOrganizationRequest request) {
+    public Organization createOrganization(OrganizationRequest request) {
         Organization organization = organizationMapper.toEntity(request);
+
+        return organizationRepository.save(organization);
+    }
+
+    @Transactional
+    public Organization updateOrganization(Long organizationId, OrganizationRequest request) {
+        Organization organization = getOrganizationOrThrowException(organizationId);
+
+        organization = organizationMapper.updateOrganization(request, organization);
 
         return organizationRepository.save(organization);
     }
