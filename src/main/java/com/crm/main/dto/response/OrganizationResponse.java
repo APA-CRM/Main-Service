@@ -25,6 +25,8 @@ public class OrganizationResponse {
 
     private String email;
 
+    private String description;
+
     private Instant createdAt;
 
     private Instant updatedAt;
