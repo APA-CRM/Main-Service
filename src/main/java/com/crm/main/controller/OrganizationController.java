@@ -60,6 +60,6 @@ public class OrganizationController {
             Long organizationId,
             @RequestBody OrganizationRequest request
     ) {
-        return facade.updateOrganizationById(request,organizationId);
+        return facade.updateOrganizationById(request, organizationId);
     }
 }

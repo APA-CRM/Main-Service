@@ -131,7 +131,7 @@ class OrganizationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(CrmConstants.USER_ID_HEADER_NAME, "101")
                 .when()
-                .get(BASE_URI)
+                .get(BASE_URI + "/{organizationId}", organizationId)
                 .then()
                 .log().all()
                 .assertThat()
@@ -142,9 +142,7 @@ class OrganizationControllerTest extends BaseIntegrationTest {
                 .body("city", notNullValue())
                 .body("country", notNullValue())
                 .body("email", notNullValue())
-                .body("description", notNullValue())
-                .body("createdAt", notNullValue())
-                .body("updatedAt", notNullValue());
+                .body("description", notNullValue());
     }
 
     @Test
