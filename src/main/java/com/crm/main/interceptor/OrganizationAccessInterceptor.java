@@ -11,7 +11,6 @@ import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +26,6 @@ public class OrganizationAccessInterceptor implements PublicEndpointInterceptor 
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
-
     private final List<Endpoint> PUBLIC_ENDPOINTS = List.of(
             new Endpoint(HttpMethod.GET, "/api/organizations/*/preview"),
             new Endpoint(HttpMethod.PATCH, "/api/organizations/invitations/**"),
@@ -38,6 +35,11 @@ public class OrganizationAccessInterceptor implements PublicEndpointInterceptor 
             new Endpoint(HttpMethod.POST, "/api/organizations"),
             new Endpoint(HttpMethod.GET, "/api/internal/**")
     );
+
+    @Override
+    public List<Endpoint> getPublicEndpoints() {
+        return PUBLIC_ENDPOINTS;
+    }
 
     @Override
     public boolean intercept(
@@ -80,19 +82,4 @@ public class OrganizationAccessInterceptor implements PublicEndpointInterceptor 
         response.setStatus(httpStatus);
     }
 
-    @Override
-    public List<Endpoint> getPublicEndpoints() {
-        return PUBLIC_ENDPOINTS;
-    }
-
-    @Override
-    public boolean isPublicEndpoint(HttpServletRequest request) {
-        HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
-        String uri = request.getRequestURI();
-
-        return getPublicEndpoints().stream().anyMatch(
-                endpoint -> endpoint.getHttpMethod().equals(httpMethod) &&
-                        pathMatcher.match(endpoint.getUri(), uri)
-        );
-    }
 }
