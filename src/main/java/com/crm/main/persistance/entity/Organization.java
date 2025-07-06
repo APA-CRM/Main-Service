@@ -36,6 +36,8 @@ public class Organization {
 
     private String email;
 
+    private String description;
+
     @OneToMany(
             mappedBy = "organization",
             orphanRemoval = true,

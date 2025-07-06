@@ -1,7 +1,7 @@
 package com.crm.main.controller;
 
 import com.crm.main.BaseIntegrationTest;
-import com.crm.main.dto.request.CreateOrganizationRequest;
+import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.feign.AuthClient;
 import com.crm.sharedlib.consts.CrmConstants;
 import com.crm.sharedlib.dto.response.RoleResponse;
@@ -34,13 +34,14 @@ class OrganizationControllerTest extends BaseIntegrationTest {
     @DisplayName("Create organization expected success")
     public void createOrganizationExpectedSuccess() {
 
-        CreateOrganizationRequest request = new CreateOrganizationRequest();
+        OrganizationRequest request = new OrganizationRequest();
 
         request.setEmail("test@gmail.com");
         request.setCity("city");
         request.setName("Name of organization");
         request.setCountry("country");
         request.setAddress("address");
+        request.setDescription("JavaRush");
 
         RoleResponse response = new RoleResponse();
 
@@ -65,6 +66,7 @@ class OrganizationControllerTest extends BaseIntegrationTest {
                 .body("city", is(request.getCity()))
                 .body("country", is(request.getCountry()))
                 .body("email", is(request.getEmail()))
+                .body("description", is(request.getDescription()))
                 .body("createdAt", notNullValue())
                 .body("updatedAt", notNullValue());
 
@@ -118,6 +120,63 @@ class OrganizationControllerTest extends BaseIntegrationTest {
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("message", is("Organization is not found"));
+    }
+
+    @Test
+    @DisplayName("Get organization by ID expected success")
+    public void getOrganizationById() {
+        final int organizationId = 100;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(CrmConstants.USER_ID_HEADER_NAME, "101")
+                .when()
+                .get(BASE_URI + "/{organizationId}", organizationId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", notNullValue())
+                .body("name", notNullValue())
+                .body("address", notNullValue())
+                .body("city", notNullValue())
+                .body("country", notNullValue())
+                .body("email", notNullValue())
+                .body("description", notNullValue());
+    }
+
+    @Test
+    @DisplayName("Update organization by ID expected success")
+    public void updateOrganizationById() {
+        final int organizationId = 100;
+        OrganizationRequest request = new OrganizationRequest();
+
+        request.setEmail("test@gmail.com");
+        request.setCity("city");
+        request.setName("Jopi4i");
+        request.setCountry("KIEV");
+        request.setAddress("address");
+        request.setDescription("JavaRush");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .header(CrmConstants.USER_ID_HEADER_NAME, "1")
+                .header(CrmConstants.ORGANIZATION_ID_HEADER_NAME, organizationId)
+                .when()
+                .put(BASE_URI + "/{organizationId}", organizationId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", notNullValue())
+                .body("name", is(request.getName()))
+                .body("address", is(request.getAddress()))
+                .body("city", is(request.getCity()))
+                .body("country", is(request.getCountry()))
+                .body("email", is(request.getEmail()))
+                .body("description", is(request.getDescription()))
+                .body("updatedAt", notNullValue());
     }
 
 }

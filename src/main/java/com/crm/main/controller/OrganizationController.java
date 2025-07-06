@@ -1,6 +1,6 @@
 package com.crm.main.controller;
 
-import com.crm.main.dto.request.CreateOrganizationRequest;
+import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.dto.response.OrganizationPreviewResponse;
 import com.crm.main.dto.response.OrganizationResponse;
 import com.crm.main.facade.OrganizationFacade;
@@ -39,11 +39,27 @@ public class OrganizationController {
     public OrganizationResponse createOrganization(
             @Valid
             @RequestBody
-            CreateOrganizationRequest request,
+            OrganizationRequest request,
             @RequestHeader(USER_ID_HEADER_NAME)
             Long userId
     ) {
         return facade.createOrganization(request, userId);
     }
 
+    @GetMapping("/{organizationId}")
+    public OrganizationResponse getOrganizationById(
+            @PathVariable("organizationId")
+            Long organizationId
+    ) {
+        return facade.getOrganizationById(organizationId);
+    }
+
+    @PutMapping("/{organizationId}")
+    public OrganizationResponse updateOrganizationById(
+            @PathVariable("organizationId")
+            Long organizationId,
+            @RequestBody OrganizationRequest request
+    ) {
+        return facade.updateOrganizationById(request, organizationId);
+    }
 }

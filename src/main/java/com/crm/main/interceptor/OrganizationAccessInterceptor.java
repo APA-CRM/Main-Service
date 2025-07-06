@@ -8,10 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.util.AntPathMatcher;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
@@ -19,14 +21,26 @@ import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static java.util.Objects.isNull;
 
 @RequiredArgsConstructor
-public class OrganizationAccessInterceptor implements HandlerInterceptor {
+public class OrganizationAccessInterceptor implements PublicEndpointInterceptor {
 
     private final OrganizationUserService userService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    private final List<Endpoint> PUBLIC_ENDPOINTS = List.of(
+            new Endpoint(HttpMethod.GET, "/api/organizations/*/preview"),
+            new Endpoint(HttpMethod.PATCH, "/api/organizations/invitations/**"),
+            new Endpoint(HttpMethod.GET, "/api/organizations/invitations/**"),
+            new Endpoint(HttpMethod.GET, "/api/organizations"),
+            new Endpoint(HttpMethod.GET, "/api/organizations/*"),
+            new Endpoint(HttpMethod.POST, "/api/organizations"),
+            new Endpoint(HttpMethod.GET, "/api/internal/**")
+    );
+
     @Override
-    public boolean preHandle(
+    public boolean intercept(
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler
@@ -64,5 +78,21 @@ public class OrganizationAccessInterceptor implements HandlerInterceptor {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write(value);
         response.setStatus(httpStatus);
+    }
+
+    @Override
+    public List<Endpoint> getPublicEndpoints() {
+        return PUBLIC_ENDPOINTS;
+    }
+
+    @Override
+    public boolean isPublicEndpoint(HttpServletRequest request) {
+        HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
+        String uri = request.getRequestURI();
+
+        return getPublicEndpoints().stream().anyMatch(
+                endpoint -> endpoint.getHttpMethod().equals(httpMethod) &&
+                        pathMatcher.match(endpoint.getUri(), uri)
+        );
     }
 }

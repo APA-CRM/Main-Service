@@ -1,6 +1,6 @@
 package com.crm.main.service.operation;
 
-import com.crm.main.dto.request.CreateOrganizationRequest;
+import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationRoleUser;
@@ -45,7 +45,7 @@ public class OrganizationCreatorService {
 
     @Transactional
     public Organization createOrganization(
-            CreateOrganizationRequest request,
+            OrganizationRequest request,
             Long userId
     ) {
         Organization organization = organizationService.createOrganization(request);
