@@ -19,7 +19,7 @@ public class SendInvitationOfOrganizationConsumer {
     private final EmailService emailService;
     private final TemplateBuilder templateBuilder;
 
-    @Value("${app.frontend-url}")
+    @Value("${app.frontend.url}")
     private String frontEndUrl;
 
     @RabbitListener(queues = SEND_INVITATION_OF_ORGANIZATION)
