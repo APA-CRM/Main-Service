@@ -32,7 +32,7 @@ public class OrganizationRoleAssignmentService {
 
     @Transactional
     public RoleResponse createOrganizationRole(Organization organization, RoleRequest request) {
-        RoleResponse role = roleClientWrapper.createRole(request);
+        RoleResponse role = roleClientWrapper.createRole(request, true);
 
         roleService.createRoleForOrganization(organization, role.getId());
 

@@ -1,6 +1,7 @@
 package com.crm.main.service.wrapper;
 
 import com.crm.main.feign.AuthClient;
+import com.crm.sharedlib.dto.request.CreateRoleRequest;
 import com.crm.sharedlib.dto.request.RoleFilterRequest;
 import com.crm.sharedlib.dto.request.RoleRequest;
 import com.crm.sharedlib.dto.response.RoleResponse;
@@ -17,8 +18,13 @@ public class RoleClientWrapper {
 
     private final AuthClient authClient;
 
-    public RoleResponse createRole(RoleRequest request) {
-        return authClient.createRole(request);
+    public RoleResponse createRole(RoleRequest request, boolean isDeletable) {
+        CreateRoleRequest roleRequest = new CreateRoleRequest();
+        roleRequest.setIsDeletable(isDeletable);
+        roleRequest.setName(request.getName());
+        roleRequest.setResources(request.getResources());
+
+        return authClient.createRole(roleRequest);
     }
 
     public RoleResponse updateRole(RoleRequest request, Long roleId) {

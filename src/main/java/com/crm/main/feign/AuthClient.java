@@ -1,5 +1,6 @@
 package com.crm.main.feign;
 
+import com.crm.sharedlib.dto.request.CreateRoleRequest;
 import com.crm.sharedlib.dto.request.RoleFilterRequest;
 import com.crm.sharedlib.dto.request.RoleRequest;
 import com.crm.sharedlib.dto.request.UserFilterRequest;
@@ -17,7 +18,7 @@ import java.util.List;
 public interface AuthClient {
 
     @PostMapping("/api/internal/roles")
-    RoleResponse createRole(@RequestBody RoleRequest request);
+    RoleResponse createRole(@RequestBody CreateRoleRequest request);
 
     @PutMapping("/api/internal/roles/{roleId}")
     RoleResponse updateRole(@RequestBody RoleRequest request, @PathVariable("roleId") Long roleId);
