@@ -65,7 +65,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .log().all()
                 .assertThat()
                 .statusCode(HttpStatus.FORBIDDEN.value())
-                .body("message", is("Organization ID or user ID is not specified"));
+                .body("message", is("User is not in the organization"));
     }
 
 
