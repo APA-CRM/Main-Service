@@ -18,8 +18,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(indexes =
-@Index(columnList = "fileId,organization", name = "file_id_organization_id_index")
+@Table(
+        indexes = @Index(columnList = "file_id,organization_Id", name = "file_id_organization_id_index"),
+        uniqueConstraints = @UniqueConstraint(columnNames = "file_id,organization_Id", name = "file_id_organization_id_uq")
 )
 public class OrganizationFile {
 

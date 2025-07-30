@@ -13,4 +13,5 @@ public interface OrganizationFileRepository extends JpaRepository<OrganizationFi
 
     Optional<OrganizationFile> findByOrganizationAndFileId(Organization organization, UUID fileId);
 
+    boolean existsByOrganizationAndFileId(Organization organization, UUID fileId);
 }
