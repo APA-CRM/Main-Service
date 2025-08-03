@@ -28,7 +28,7 @@ public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
             new Endpoint(List.of(HttpMethod.PATCH, HttpMethod.GET), "/api/organizations/invitations/**"),
             new Endpoint(List.of(HttpMethod.GET, HttpMethod.POST), "/api/organizations"),
             new Endpoint(singletonList(HttpMethod.GET), "/api/organizations/*"),
-            new Endpoint(singletonList(HttpMethod.GET), "/api/internal/**")
+            new Endpoint(singletonList(HttpMethod.GET), "/api/internal/organizations/*/users/**")
     );
 
     @Override
