@@ -17,7 +17,7 @@ public class InternalOrganizationFilesController {
 
     private final InternalOrganizationFilesFacade facade;
 
-    @GetMapping("/{organizationId}/files/{fileId}")
+    @GetMapping("/{organizationId}/files/{fileId}/check")
     public ResponseEntity<?> organizationHasAFile(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("fileId") UUID fileId

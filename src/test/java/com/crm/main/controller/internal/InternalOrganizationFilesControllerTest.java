@@ -37,7 +37,7 @@ class InternalOrganizationFilesControllerTest extends BaseIntegrationTest {
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, organizationId)
                 .when()
-                .get(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
+                .get(BASE_URI + "/{organizationId}/files/{fileId}/check", organizationId, fileId)
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -54,7 +54,7 @@ class InternalOrganizationFilesControllerTest extends BaseIntegrationTest {
                 .header(USER_ID_HEADER_NAME, 100)
                 .header(ORGANIZATION_ID_HEADER_NAME, organizationId)
                 .when()
-                .get(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
+                .get(BASE_URI + "/{organizationId}/files/{fileId}/check", organizationId, fileId)
                 .then()
                 .log().all()
                 .assertThat()
