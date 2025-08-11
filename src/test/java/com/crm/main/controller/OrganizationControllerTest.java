@@ -3,7 +3,9 @@ package com.crm.main.controller;
 import com.crm.main.BaseIntegrationTest;
 import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.feign.AuthClient;
+import com.crm.main.feign.FileClient;
 import com.crm.sharedlib.consts.CrmConstants;
+import com.crm.sharedlib.dto.response.FileIdResponse;
 import com.crm.sharedlib.dto.response.RoleResponse;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -14,18 +16,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Sql(scripts = "classpath:sql/insertTestOrganizations.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "classpath:sql/deleteTestOrganization.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(scripts = {
+        "classpath:sql/deleteTestOrganizationFile.sql",
+        "classpath:sql/deleteTestOrganization.sql"
+}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class OrganizationControllerTest extends BaseIntegrationTest {
 
     private final static String BASE_URI = "/api/organizations";
 
     @MockitoBean
     private AuthClient authClient;
+
+    @MockitoBean
+    private FileClient fileClient;
 
     @MockitoBean
     private RabbitTemplate rabbitTemplate;
@@ -49,6 +59,9 @@ class OrganizationControllerTest extends BaseIntegrationTest {
 
         Mockito.when(authClient.createRole(Mockito.any()))
                 .thenReturn(response);
+
+        Mockito.when(fileClient.createDefaultDirectory(Mockito.any()))
+                .thenReturn(new FileIdResponse(UUID.randomUUID()));
 
         given()
                 .contentType(ContentType.JSON)

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -16,6 +17,11 @@ import java.util.UUID;
 public class OrganizationFileService {
 
     private final OrganizationFileRepository fileRepository;
+
+    public OrganizationFile getRootOrganizationFileOrThrowException(Organization organization) {
+        return fileRepository.findByOrganizationAndIsRootTrue(organization)
+                .orElseThrow(() -> new NotFoundException("Organization`s root file is not found"));
+    }
 
     public OrganizationFile getOrganizationFileOrThrowException(Organization organization, UUID fileId) {
         return fileRepository.findByOrganizationAndFileId(organization, fileId)
@@ -33,6 +39,24 @@ public class OrganizationFileService {
         file.setFileId(fileId);
 
         return fileRepository.save(file);
+    }
+
+    @Transactional
+    public void createRootOrganizationFile(Organization organization, UUID fileId) {
+        Optional<OrganizationFile> rootFile =
+                fileRepository.findByOrganizationAndIsRootTrue(organization);
+
+        if (rootFile.isPresent()) {
+            throw new ConflictException("Organization is already has a root file");
+        }
+
+        OrganizationFile file = new OrganizationFile();
+
+        file.setFileId(fileId);
+        file.setIsRoot(true);
+        file.setOrganization(organization);
+
+        fileRepository.save(file);
     }
 
     @Transactional
