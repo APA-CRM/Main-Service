@@ -34,6 +34,9 @@ public class OrganizationFile {
     @ManyToOne(optional = false)
     private Organization organization;
 
+    @Column(nullable = false)
+    private Boolean isRoot = false;
+
     @CreatedDate
     private Instant createdAt;
 

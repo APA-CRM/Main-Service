@@ -5,11 +5,9 @@ import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationRoleUser;
 import com.crm.main.persistance.entity.OrganizationUser;
-import com.crm.main.service.OrganizationRoleService;
-import com.crm.main.service.OrganizationRoleUserService;
-import com.crm.main.service.OrganizationService;
-import com.crm.main.service.OrganizationUserService;
+import com.crm.main.service.*;
 import com.crm.main.service.producer.OrgUserRoleChangedProducer;
+import com.crm.main.service.wrapper.FileClientWrapper;
 import com.crm.main.service.wrapper.RoleClientWrapper;
 import com.crm.sharedlib.dto.request.CreateRoleRequest;
 import com.crm.sharedlib.dto.request.ResourceWithActionsRequest;
@@ -23,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +31,19 @@ public class OrganizationCreatorService {
     private final OrganizationService organizationService;
     private final OrganizationUserService organizationUserService;
     private final OrganizationRoleUserService organizationRoleUserService;
+    private final OrganizationFileService fileService;
 
     private final RoleClientWrapper roleClientWrapper;
+    private final FileClientWrapper fileClientWrapper;
 
     private final OrgUserRoleChangedProducer roleChangedProducer;
 
     @Value("${app.roles.default-admin-name}")
     private String adminRoleName;
-
     @Value("${app.roles.default-member-name}")
     private String memberRoleName;
+    @Value("${app.files.default-root-dir-prefix-name}")
+    private String rootDirPrefixName;
 
     @Transactional
     public Organization createOrganization(
@@ -60,9 +62,18 @@ public class OrganizationCreatorService {
         OrganizationRoleUser roleForOrganizationUser =
                 organizationRoleUserService.createRoleForOrganizationUser(role, userOfOrganization);
 
+        createRootOrganizationDirectory(organization);
+
         roleChangedProducer.sendOrgUserRoleChanged(organization, userOfOrganization);
 
         return organization;
+    }
+
+    private void createRootOrganizationDirectory(Organization organization) {
+        UUID fileId =
+                fileClientWrapper.createDefaultDirectory(organization.getName() + " " + rootDirPrefixName);
+
+        fileService.createRootOrganizationFile(organization, fileId);
     }
 
     private OrganizationRole createAdminRoleForOrganization(Organization organization) {

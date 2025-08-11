@@ -53,6 +53,30 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
     }
 
     @Test
+    @DisplayName("Get root organization file expected success")
+    public void getRootOrganizationFileExpectedSuccess() {
+        final int organizationId = 100;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, 1)
+                .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .when()
+                .get(BASE_URI + "/{organizationId}/files/root", organizationId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("id", notNullValue())
+                .body("organization", notNullValue())
+                .body("organization.id", is(organizationId))
+                .body("fileId", notNullValue())
+                .body("updatedAt", notNullValue())
+                .body("createdAt", notNullValue());
+
+    }
+
+    @Test
     @DisplayName("Get organization file when not exists expected not found")
     public void createOrganizationFileWhenNotExistsExpectedNotFound() {
         final int organizationId = 100;
@@ -76,7 +100,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
     @DisplayName("Create organization file expected success")
     public void createOrganizationFileExpectedSuccess() {
         final int organizationId = 100;
-        final UUID fileId = UUID.fromString("5682d1e7-3eb4-4e41-923a-7b7abc0239c3");
+        final UUID fileId = UUID.fromString("5682d1e7-3eb4-4e41-923a-7b7abc0239cc");
 
         given()
                 .contentType(ContentType.JSON)
