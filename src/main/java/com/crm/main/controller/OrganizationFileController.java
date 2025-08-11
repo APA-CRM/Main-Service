@@ -23,6 +23,13 @@ public class OrganizationFileController {
         return facade.getOrganizationFile(organizationId, fileId);
     }
 
+    @GetMapping("/{organizationId}/files/root")
+    public OrganizationFileResponse getRootOrganizationFile(
+            @PathVariable("organizationId") Long organizationId
+    ) {
+        return facade.getRootOrganizationFile(organizationId);
+    }
+
     @PostMapping("/{organizationId}/files/{fileId}")
     public OrganizationFileResponse createOrganizationFile(
             @PathVariable("organizationId") Long organizationId,

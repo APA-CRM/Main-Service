@@ -30,6 +30,15 @@ public class OrganizationFileFacade {
         return fileMapper.toDto(organizationFile);
     }
 
+    public OrganizationFileResponse getRootOrganizationFile(Long organizationId) {
+        Organization organization =
+                organizationService.getOrganizationOrThrowException(organizationId);
+
+        OrganizationFile rootFile = fileService.getRootOrganizationFileOrThrowException(organization);
+
+        return fileMapper.toDto(rootFile);
+    }
+
     public OrganizationFileResponse createOrganizationFile(Long organizationId, UUID fileId) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
