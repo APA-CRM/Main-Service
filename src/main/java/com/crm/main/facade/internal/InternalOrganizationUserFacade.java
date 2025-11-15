@@ -8,6 +8,7 @@ import com.crm.main.service.OrganizationService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.sharedlib.annotations.Facade;
 import com.crm.sharedlib.dto.response.OrganizationUserRolesResponse;
+import com.crm.sharedlib.dto.response.UserExistsInOrganizationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Facade
 @RequiredArgsConstructor
-public class InternalOrganizationUserRoleFacade {
+public class InternalOrganizationUserFacade {
 
     private final OrganizationService organizationService;
     private final OrganizationUserService userService;
@@ -43,6 +44,14 @@ public class InternalOrganizationUserRoleFacade {
                 .userId(userId)
                 .rolesId(rolesId)
                 .build();
+    }
+
+    public UserExistsInOrganizationResponse isUserExistsInOrganization(
+            Long organizationId, Long userId
+    ) {
+        boolean userExistsInOrganization = userService.isUserExistsInOrganization(organizationId, userId);
+
+        return new UserExistsInOrganizationResponse(userExistsInOrganization);
     }
 
 }
