@@ -2,6 +2,7 @@ package com.crm.main.persistance.repository;
 
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationUser;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,6 +38,7 @@ public interface OrganizationUserRepository extends JpaRepository<OrganizationUs
 
     List<OrganizationUser> findByOrganization(Organization organization);
 
+    @EntityGraph(attributePaths = "organization")
     List<OrganizationUser> findByUserId(Long userId);
 
 }

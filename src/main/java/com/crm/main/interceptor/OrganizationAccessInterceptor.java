@@ -1,6 +1,5 @@
 package com.crm.main.interceptor;
 
-import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.sharedlib.interceptor.Endpoint;
 import com.crm.sharedlib.interceptor.PublicEndpointInterceptor;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
 import static java.util.Collections.singletonList;
@@ -41,7 +39,7 @@ public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler
-    ) throws Exception {
+    ) {
 
         Long organizationId = OrganizationIdExtractor.extractOrganizationIdFromRequest(request);
 
@@ -52,12 +50,9 @@ public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
             return false;
         }
 
-        Optional<OrganizationUser> organizationUser =
-                userService.getByOrganizationAndUserId(
-                        organizationId, Long.valueOf(userId)
-                );
+        boolean userExistsInOrganization = userService.isUserExistsInOrganization(organizationId, Long.valueOf(userId));
 
-        if (organizationUser.isEmpty()) {
+        if (!userExistsInOrganization) {
             super.respondWithError(HttpStatus.FORBIDDEN.value(), "User is not in the organization", response);
             return false;
         }

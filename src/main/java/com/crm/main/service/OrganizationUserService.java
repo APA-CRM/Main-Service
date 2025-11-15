@@ -18,10 +18,13 @@ public class OrganizationUserService {
     private final OrganizationUserRepository repository;
 
     public Optional<OrganizationUser> getByOrganizationAndUserId(
-            Long organizationId,
-            Long userId
+            Long organizationId, Long userId
     ) {
         return repository.findByOrganizationIdAndUserId(organizationId, userId);
+    }
+
+    public boolean isUserExistsInOrganization(Long organizationId, Long userId) {
+        return getByOrganizationAndUserId(organizationId, userId).isPresent();
     }
 
     public Optional<OrganizationUser> getOrganizationUserOptional(

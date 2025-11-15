@@ -14,13 +14,13 @@ import static org.hamcrest.Matchers.is;
 
 @Sql(scripts = "classpath:sql/insertTestOrganizations.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:sql/deleteTestOrganization.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-class InternalOrganizationUserRoleControllerTest extends BaseIntegrationTest {
+class InternalOrganizationUserControllerTest extends BaseIntegrationTest {
 
     private final static String BASE_URI = "/api/internal/organizations";
 
     @Test
-    @DisplayName("Get organization user roles expected success response")
-    public void getOrganizationUserRolesExpectedSuccess() {
+    @DisplayName("Get organization user expected success response")
+    public void getOrganizationUserExpectedSuccess() {
 
         final int organizationId = 100;
         final int userId = 1;
@@ -37,6 +37,26 @@ class InternalOrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .body("organizationId", is(organizationId))
                 .body("userId", is(userId))
                 .body("rolesId", containsInAnyOrder(1));
+
+    }
+
+    @Test
+    @DisplayName("Get is user exists in an organization expected success response")
+    public void getIsUserExistsInOrganizationExpectedSuccess() {
+
+        final int organizationId = 100;
+        final int userId = 1;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(CrmConstants.USER_ID_HEADER_NAME, "1")
+                .when()
+                .get(BASE_URI + "/{organizationId}/users/{userId}/exists", organizationId, userId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("isUserExistsInOrganization", is(true));
 
     }
 
