@@ -70,13 +70,6 @@ public class RabbitMQConfig {
     public class ProducerConfig {
 
         @Bean
-        public Queue sendPasswordQueue() {
-            return QueueBuilder
-                    .durable(SEND_PASSWORD_QUEUE)
-                    .build();
-        }
-
-        @Bean
         public TopicExchange mainServiceTopicExchanger() {
             return ExchangeBuilder
                     .topicExchange(MAIN_SERVICE_EXCHANGER_NAME)
