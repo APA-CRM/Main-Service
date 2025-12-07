@@ -7,7 +7,7 @@ import com.crm.sharedlib.core.dto.response.RoleResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,12 +62,11 @@ public class OrganizationRolesController {
     }
 
     @DeleteMapping("/{organizationId}/roles/{roleId}")
-    public ResponseEntity<Void> deleteOrganizationRole(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOrganizationRole(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId
     ) {
         facade.deleteOrganizationRole(organizationId, roleId);
-
-        return ResponseEntity.noContent().build();
     }
 }

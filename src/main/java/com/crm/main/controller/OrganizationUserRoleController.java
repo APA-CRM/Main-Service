@@ -3,7 +3,7 @@ package com.crm.main.controller;
 import com.crm.main.facade.OrganizationUserRoleFacade;
 import com.crm.sharedlib.core.dto.response.RoleResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,13 +23,12 @@ public class OrganizationUserRoleController {
     }
 
     @DeleteMapping("/{organizationId}/users/{userId}/roles/{roleId}")
-    public ResponseEntity<Void> removeRoleForUserOrganization(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeRoleForUserOrganization(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,
             @PathVariable("userId") Long userId
     ) {
         facade.removeRoleForUserOrganization(organizationId, roleId, userId);
-
-        return ResponseEntity.noContent().build();
     }
 }
