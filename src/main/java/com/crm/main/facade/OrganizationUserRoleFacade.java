@@ -17,22 +17,22 @@ public class OrganizationUserRoleFacade {
 
     public RoleResponse addRoleForUserInOrganization(
             Long organizationId, Long roleId,
-            Long userId
+            Long userId, Long authorizedUser
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
 
-        return assignmentService.addRoleForUserInOrganization(organization, roleId, userId);
+        return assignmentService.addRoleForUserInOrganization(organization, roleId, userId, authorizedUser);
     }
 
     public void removeRoleForUserOrganization(
             Long organizationId, Long roleId,
-            Long userId
+            Long userId, Long authorizedUser
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
 
-        assignmentService.removeRoleForUserOrganization(organization, roleId, userId);
+        assignmentService.removeRoleForUserOrganization(organization, roleId, userId, authorizedUser);
     }
 
 }

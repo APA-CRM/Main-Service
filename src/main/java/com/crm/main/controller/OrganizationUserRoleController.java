@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
+
 @RestController
 @RequestMapping("/api/organizations")
 @RequiredArgsConstructor
@@ -17,9 +19,10 @@ public class OrganizationUserRoleController {
     public RoleResponse addRoleForUser(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,
-            @PathVariable("userId") Long userId
+            @PathVariable("userId") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long authorizedUser
     ) {
-        return facade.addRoleForUserInOrganization(organizationId, roleId, userId);
+        return facade.addRoleForUserInOrganization(organizationId, roleId, userId, authorizedUser);
     }
 
     @DeleteMapping("/{organizationId}/users/{userId}/roles/{roleId}")
@@ -27,8 +30,9 @@ public class OrganizationUserRoleController {
     public void removeRoleForUserOrganization(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,
-            @PathVariable("userId") Long userId
+            @PathVariable("userId") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long authorizedUser
     ) {
-        facade.removeRoleForUserOrganization(organizationId, roleId, userId);
+        facade.removeRoleForUserOrganization(organizationId, roleId, userId, authorizedUser);
     }
 }

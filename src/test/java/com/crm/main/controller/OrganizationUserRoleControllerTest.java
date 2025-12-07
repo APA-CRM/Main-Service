@@ -155,6 +155,12 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
         final Long organizationId = 100L;
         final Long roleId = 4L;
 
+        RoleResponse roleResponse = new RoleResponse();
+        roleResponse.setName("Test role");
+
+        Mockito.when(authClient.getRole(Mockito.anyList()))
+                .thenReturn(Collections.singletonList(roleResponse));
+
         given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)

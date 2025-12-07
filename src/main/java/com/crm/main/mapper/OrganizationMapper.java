@@ -22,6 +22,10 @@ public interface OrganizationMapper {
     @Mapping(target = "updatedAt", ignore = true)
     Organization toEntity(OrganizationRequest request);
 
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "organizationUser", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     Organization updateOrganization(OrganizationRequest request,
                                     @MappingTarget Organization organization);
 
