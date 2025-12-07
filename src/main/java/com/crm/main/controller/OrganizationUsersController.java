@@ -2,7 +2,7 @@ package com.crm.main.controller;
 
 import com.crm.main.dto.request.UserAndRolesFilterRequest;
 import com.crm.main.facade.OrganizationUsersFacade;
-import com.crm.sharedlib.dto.response.UserWithRoleResponse;
+import com.crm.sharedlib.core.dto.response.UserWithRoleResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;

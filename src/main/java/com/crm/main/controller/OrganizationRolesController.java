@@ -1,9 +1,9 @@
 package com.crm.main.controller;
 
 import com.crm.main.facade.OrganizationRolesFacade;
-import com.crm.sharedlib.dto.request.RoleFilterRequest;
-import com.crm.sharedlib.dto.request.RoleRequest;
-import com.crm.sharedlib.dto.response.RoleResponse;
+import com.crm.sharedlib.core.dto.request.RoleFilterRequest;
+import com.crm.sharedlib.core.dto.request.RoleRequest;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;

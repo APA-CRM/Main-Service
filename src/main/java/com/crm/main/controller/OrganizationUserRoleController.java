@@ -1,7 +1,7 @@
 package com.crm.main.controller;
 
 import com.crm.main.facade.OrganizationUserRoleFacade;
-import com.crm.sharedlib.dto.response.RoleResponse;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

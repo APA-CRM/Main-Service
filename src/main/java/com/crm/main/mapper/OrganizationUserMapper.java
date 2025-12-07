@@ -1,9 +1,9 @@
 package com.crm.main.mapper;
 
 import com.crm.main.persistance.entity.OrganizationUser;
-import com.crm.sharedlib.dto.request.UserFilterRequest;
-import com.crm.sharedlib.dto.request.UserWithRolesFilterRequest;
-import com.crm.sharedlib.dto.response.UserAndRoles;
+import com.crm.sharedlib.core.dto.request.UserFilterRequest;
+import com.crm.sharedlib.core.dto.request.UserWithRolesFilterRequest;
+import com.crm.sharedlib.core.dto.response.UserAndRoles;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

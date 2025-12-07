@@ -4,9 +4,8 @@ import com.crm.main.BaseIntegrationTest;
 import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.feign.AuthClient;
 import com.crm.main.feign.FileClient;
-import com.crm.sharedlib.consts.CrmConstants;
-import com.crm.sharedlib.dto.response.FileIdResponse;
-import com.crm.sharedlib.dto.response.RoleResponse;
+import com.crm.sharedlib.core.dto.response.FileIdResponse;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.UUID;
 
+import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -66,7 +67,7 @@ class OrganizationControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .header(CrmConstants.USER_ID_HEADER_NAME, "101")
+                .header(USER_ID_HEADER_NAME, "101")
                 .when()
                 .post(BASE_URI)
                 .then()
@@ -91,7 +92,7 @@ class OrganizationControllerTest extends BaseIntegrationTest {
     public void getOrganizationOfUserExpectedSuccess() {
         given()
                 .contentType(ContentType.JSON)
-                .header(CrmConstants.USER_ID_HEADER_NAME, "1")
+                .header(USER_ID_HEADER_NAME, "1")
                 .when()
                 .get(BASE_URI)
                 .then()
@@ -142,7 +143,7 @@ class OrganizationControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
-                .header(CrmConstants.USER_ID_HEADER_NAME, "101")
+                .header(USER_ID_HEADER_NAME, "101")
                 .when()
                 .get(BASE_URI + "/{organizationId}", organizationId)
                 .then()
@@ -174,8 +175,8 @@ class OrganizationControllerTest extends BaseIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .header(CrmConstants.USER_ID_HEADER_NAME, "1")
-                .header(CrmConstants.ORGANIZATION_ID_HEADER_NAME, organizationId)
+                .header(USER_ID_HEADER_NAME, "1")
+                .header(ORGANIZATION_ID_HEADER_NAME, organizationId)
                 .when()
                 .put(BASE_URI + "/{organizationId}", organizationId)
                 .then()

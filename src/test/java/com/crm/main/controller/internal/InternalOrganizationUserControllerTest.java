@@ -1,13 +1,13 @@
 package com.crm.main.controller.internal;
 
 import com.crm.main.BaseIntegrationTest;
-import com.crm.sharedlib.consts.CrmConstants;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
@@ -27,7 +27,7 @@ class InternalOrganizationUserControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
-                .header(CrmConstants.USER_ID_HEADER_NAME, "1")
+                .header(USER_ID_HEADER_NAME, "1")
                 .when()
                 .get(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
                 .then()
@@ -49,7 +49,7 @@ class InternalOrganizationUserControllerTest extends BaseIntegrationTest {
 
         given()
                 .contentType(ContentType.JSON)
-                .header(CrmConstants.USER_ID_HEADER_NAME, "1")
+                .header(USER_ID_HEADER_NAME, "1")
                 .when()
                 .get(BASE_URI + "/{organizationId}/users/{userId}/exists", organizationId, userId)
                 .then()

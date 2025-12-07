@@ -4,7 +4,7 @@ import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.mapper.OrganizationMapper;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.repository.OrganizationRepository;
-import com.crm.sharedlib.exception.NotFoundException;
+import com.crm.sharedlib.core.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

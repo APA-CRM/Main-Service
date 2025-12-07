@@ -5,7 +5,7 @@ import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationRoleUserService;
 import com.crm.main.service.OrganizationUserService;
-import com.crm.sharedlib.exception.ConflictException;
+import com.crm.sharedlib.core.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,8 +1,8 @@
 package com.crm.main.service.wrapper;
 
 import com.crm.main.feign.FileClient;
-import com.crm.sharedlib.dto.request.CreateDefaultFileRequest;
-import com.crm.sharedlib.dto.response.FileIdResponse;
+import com.crm.sharedlib.core.dto.request.CreateDefaultFileRequest;
+import com.crm.sharedlib.core.dto.response.FileIdResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.crm.main.dto.request;
 
-import com.crm.sharedlib.dto.request.UserFilterRequest;
+import com.crm.sharedlib.core.dto.request.UserFilterRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
