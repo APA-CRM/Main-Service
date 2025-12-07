@@ -17,6 +17,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
 @RequiredArgsConstructor
+// TODO: Instead of Interceptor use Spring AoP mechanism
 public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
 
     private final OrganizationUserService userService;
@@ -50,6 +51,7 @@ public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
             return false;
         }
 
+        // TODO: Think about a caching
         boolean userExistsInOrganization = userService.isUserExistsInOrganization(organizationId, Long.valueOf(userId));
 
         if (!userExistsInOrganization) {
