@@ -1,9 +1,9 @@
 package com.crm.main.interceptor;
 
 import com.crm.main.service.OrganizationUserService;
-import com.crm.sharedlib.interceptor.Endpoint;
-import com.crm.sharedlib.interceptor.PublicEndpointInterceptor;
-import com.crm.sharedlib.utils.OrganizationIdExtractor;
+import com.crm.sharedlib.core.interceptor.Endpoint;
+import com.crm.sharedlib.core.interceptor.PublicEndpointInterceptor;
+import com.crm.sharedlib.core.utils.OrganizationIdExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,12 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
 @RequiredArgsConstructor
+// TODO: Instead of Interceptor use Spring AoP mechanism
 public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
 
     private final OrganizationUserService userService;
@@ -50,6 +51,7 @@ public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
             return false;
         }
 
+        // TODO: Think about a caching
         boolean userExistsInOrganization = userService.isUserExistsInOrganization(organizationId, Long.valueOf(userId));
 
         if (!userExistsInOrganization) {

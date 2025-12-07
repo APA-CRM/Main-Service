@@ -3,7 +3,7 @@ package com.crm.main.service;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.persistance.repository.OrganizationUserRepository;
-import com.crm.sharedlib.exception.NotFoundException;
+import com.crm.sharedlib.core.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

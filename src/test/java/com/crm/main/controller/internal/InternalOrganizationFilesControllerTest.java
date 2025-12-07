@@ -9,8 +9,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.UUID;
 
-import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 

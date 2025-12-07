@@ -2,6 +2,7 @@ package com.crm.main.service.processor;
 
 import com.crm.main.enums.InvitationStatus;
 import com.crm.main.enums.RoleType;
+import com.crm.main.enums.UserMessage;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationInvitation;
 import com.crm.main.persistance.entity.OrganizationRole;
@@ -10,17 +11,21 @@ import com.crm.main.service.OrganizationInvitationService;
 import com.crm.main.service.OrganizationRoleService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.InvitationCreatedProducer;
-import com.crm.sharedlib.dto.response.UserResponse;
-import com.crm.sharedlib.exception.ConflictException;
-import com.crm.sharedlib.exception.ForbiddenException;
+import com.crm.main.service.wrapper.UserClientWrapper;
+import com.crm.sharedlib.core.dto.response.UserResponse;
+import com.crm.sharedlib.core.exception.ConflictException;
+import com.crm.sharedlib.core.exception.ForbiddenException;
+import com.crm.sharedlib.messaging.service.MessagingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.crm.main.enums.UserMessage.*;
 import static java.util.Objects.isNull;
 
 @Service
@@ -31,7 +36,11 @@ public class InvitationProcessorService {
     private final OrganizationUserService userService;
     private final OrganizationRoleService roleService;
 
+    private final UserClientWrapper userClientWrapper;
+
     private final InvitationCreatedProducer invitationCreatedProducer;
+
+    private final MessagingService messagingService;
 
     @Transactional
     public OrganizationInvitation inviteUserToOrganization(
@@ -62,18 +71,55 @@ public class InvitationProcessorService {
         invitationCreatedProducer
                 .notifyUserAboutInvitationOfOrganization(invitation, user.getEmail());
 
+        UserMessage message = USER_HAS_BEEN_INVITED_TO_ORGANIZATION;
+
+        messagingService.sendMessageToUser(
+                invitation.getUserId(), message.getTitle(), message.getMessageCode(),
+                message.getMessage().formatted(invitation.getOrganization().getName()),
+                Map.of("invitationId", invitation.getId())
+        );
+
         return invitation;
     }
 
     @Transactional
     public OrganizationInvitation acceptInvitation(UUID invitationId, Long userId) {
-        return getAndUpdateInvitationStatus(invitationId, userId, InvitationStatus.ACCEPTED);
+        OrganizationInvitation invitation =
+                getAndUpdateInvitationStatus(invitationId, userId, InvitationStatus.ACCEPTED);
+
+        UserResponse user = userClientWrapper.getUserById(userId);
+
+        UserMessage message = USER_HAS_ACCEPTED_AN_INVITATION;
+
+        messagingService.sendMessageToUser(
+                invitation.getInvitorId(), message.getTitle(), message.getMessageCode(),
+                message.getMessage().formatted(
+                        user.getFullName(), invitation.getOrganization().getName()
+                ),
+                Map.of("userId", userId, "invitationId", invitation.getId())
+        );
+
+        return invitation;
     }
 
     @Transactional
-    // TODO: Notify invitor about declining his invitation
     public OrganizationInvitation declineInvitation(UUID invitationId, Long userId) {
-        return getAndUpdateInvitationStatus(invitationId, userId, InvitationStatus.DECLINED);
+        OrganizationInvitation invitation =
+                getAndUpdateInvitationStatus(invitationId, userId, InvitationStatus.DECLINED);
+
+        UserResponse user = userClientWrapper.getUserById(userId);
+
+        UserMessage message = USER_HAS_DECLINED_AN_INVITATION;
+
+        messagingService.sendMessageToUser(
+                invitation.getInvitorId(), message.getTitle(), message.getMessageCode(),
+                message.getMessage().formatted(
+                        user.getFullName(), invitation.getOrganization().getName()
+                ),
+                Map.of("userId", userId, "invitationId", invitation.getId())
+        );
+
+        return invitation;
     }
 
     private OrganizationInvitation getAndUpdateInvitationStatus(
@@ -82,22 +128,20 @@ public class InvitationProcessorService {
         OrganizationInvitation invitation =
                 invitationService.getOrganizationInvitationOrThrowException(invitationId);
 
-        checkStatusOfInvitationForUpdate(invitation);
-
-        if (!invitation.getUserId().equals(userId)) {
-            throw new ForbiddenException("You can't accept this invitation");
-        }
-
-        if (invitation.getExpiredAt().isBefore(Instant.now())) {
-            throw new ForbiddenException("Invitation time has expired");
-        }
+        validateOrganizationInvitation(invitation, userId);
 
         invitation.setStatus(status);
 
         return invitationService.saveOrganizationInvitation(invitation);
     }
 
-    private void checkStatusOfInvitationForUpdate(OrganizationInvitation invitation) {
+    private void validateOrganizationInvitation(OrganizationInvitation invitation, Long userId) {
+        if (!invitation.getUserId().equals(userId)) {
+            throw new ForbiddenException("You can't accept this invitation");
+        }
+        if (invitation.getExpiredAt().isBefore(Instant.now())) {
+            throw new ForbiddenException("Invitation time has expired");
+        }
         if (invitation.getStatus() == InvitationStatus.ACCEPTED) {
             throw new ConflictException("Invitation is already accepted");
         }

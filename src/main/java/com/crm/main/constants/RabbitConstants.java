@@ -1,5 +1,6 @@
 package com.crm.main.constants;
 
+// TODO: Move to the shared-lib
 public class RabbitConstants {
 
     public static final String MAIN_SERVICE_EXCHANGER_NAME = "main-service.events";

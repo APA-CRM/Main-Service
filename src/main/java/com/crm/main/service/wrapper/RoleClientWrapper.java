@@ -1,10 +1,10 @@
 package com.crm.main.service.wrapper;
 
 import com.crm.main.feign.AuthClient;
-import com.crm.sharedlib.dto.request.CreateRoleRequest;
-import com.crm.sharedlib.dto.request.RoleFilterRequest;
-import com.crm.sharedlib.dto.request.RoleRequest;
-import com.crm.sharedlib.dto.response.RoleResponse;
+import com.crm.sharedlib.core.dto.request.CreateRoleRequest;
+import com.crm.sharedlib.core.dto.request.RoleFilterRequest;
+import com.crm.sharedlib.core.dto.request.RoleRequest;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;

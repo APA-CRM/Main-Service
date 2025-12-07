@@ -6,7 +6,7 @@ import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationFile;
 import com.crm.main.service.OrganizationFileService;
 import com.crm.main.service.OrganizationService;
-import com.crm.sharedlib.annotations.Facade;
+import com.crm.sharedlib.core.annotations.Facade;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;

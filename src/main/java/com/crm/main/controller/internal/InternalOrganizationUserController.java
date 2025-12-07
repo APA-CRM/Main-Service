@@ -1,8 +1,8 @@
 package com.crm.main.controller.internal;
 
 import com.crm.main.facade.internal.InternalOrganizationUserFacade;
-import com.crm.sharedlib.dto.response.OrganizationUserRolesResponse;
-import com.crm.sharedlib.dto.response.UserExistsInOrganizationResponse;
+import com.crm.sharedlib.core.dto.response.OrganizationUserRolesResponse;
+import com.crm.sharedlib.core.dto.response.UserExistsInOrganizationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

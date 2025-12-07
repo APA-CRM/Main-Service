@@ -3,7 +3,7 @@ package com.crm.main.controller;
 import com.crm.main.dto.response.OrganizationFileResponse;
 import com.crm.main.facade.OrganizationFileFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -39,13 +39,12 @@ public class OrganizationFileController {
     }
 
     @DeleteMapping("/{organizationId}/files/{fileId}")
-    public ResponseEntity<?> deleteOrganizationFile(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOrganizationFile(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("fileId") UUID fileId
     ) {
         facade.deleteOrganizationFile(organizationId, fileId);
-
-        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,7 +1,7 @@
 package com.crm.main.service.producer;
 
 import com.crm.main.persistance.entity.OrganizationInvitation;
-import com.crm.sharedlib.dto.amqp.SendInvitationOfOrganizationEvent;
+import com.crm.sharedlib.core.dto.amqp.SendInvitationOfOrganizationEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;

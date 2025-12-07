@@ -10,8 +10,8 @@ import com.crm.main.service.OrganizationService;
 import com.crm.main.service.assignments.OrganizationUserAssignmentService;
 import com.crm.main.service.processor.InvitationProcessorService;
 import com.crm.main.service.wrapper.UserClientWrapper;
-import com.crm.sharedlib.annotations.Facade;
-import com.crm.sharedlib.dto.response.UserResponse;
+import com.crm.sharedlib.core.annotations.Facade;
+import com.crm.sharedlib.core.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;

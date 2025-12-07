@@ -9,7 +9,7 @@ import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationService;
 import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.operation.OrganizationCreatorService;
-import com.crm.sharedlib.annotations.Facade;
+import com.crm.sharedlib.core.annotations.Facade;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

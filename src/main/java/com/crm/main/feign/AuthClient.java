@@ -1,14 +1,14 @@
 package com.crm.main.feign;
 
-import com.crm.sharedlib.dto.request.CreateRoleRequest;
-import com.crm.sharedlib.dto.request.RoleFilterRequest;
-import com.crm.sharedlib.dto.request.RoleRequest;
-import com.crm.sharedlib.dto.request.UserFilterRequest;
-import com.crm.sharedlib.dto.response.RestResponsePage;
-import com.crm.sharedlib.dto.response.RoleResponse;
-import com.crm.sharedlib.dto.response.UserResponse;
-import com.crm.sharedlib.dto.response.UserWithRoleResponse;
-import com.crm.sharedlib.feign.FeignClientConfig;
+import com.crm.sharedlib.core.dto.request.CreateRoleRequest;
+import com.crm.sharedlib.core.dto.request.RoleFilterRequest;
+import com.crm.sharedlib.core.dto.request.RoleRequest;
+import com.crm.sharedlib.core.dto.request.UserFilterRequest;
+import com.crm.sharedlib.core.dto.response.RestResponsePage;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
+import com.crm.sharedlib.core.dto.response.UserResponse;
+import com.crm.sharedlib.core.dto.response.UserWithRoleResponse;
+import com.crm.sharedlib.core.feign.FeignClientConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

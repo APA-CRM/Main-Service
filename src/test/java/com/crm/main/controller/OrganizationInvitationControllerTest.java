@@ -10,7 +10,8 @@ import com.crm.main.persistance.entity.OrganizationRoleUser;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.persistance.repository.OrganizationRoleUserRepository;
 import com.crm.main.persistance.repository.OrganizationUserRepository;
-import com.crm.sharedlib.dto.response.UserResponse;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
+import com.crm.sharedlib.core.dto.response.UserResponse;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.DisplayName;
@@ -22,11 +23,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.crm.sharedlib.consts.CrmConstants.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -225,6 +227,18 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
     public void acceptInvitationOfOrganizationWhenRoleIsMemberExpectedSuccess() {
         final String invitationId = "6d2718fd-d2b0-4ed2-9074-9bcc2f7c28d1";
 
+        UserResponse userResponse = new UserResponse();
+        userResponse.setFullName("Test User");
+
+        RoleResponse roleResponse = new RoleResponse();
+        roleResponse.setName("Test role");
+
+        Mockito.when(authClient.getRole(Mockito.anyList()))
+                .thenReturn(Collections.singletonList(roleResponse));
+
+        Mockito.when(authClient.getUserById(Mockito.anyLong()))
+                .thenReturn(userResponse);
+
         JsonPath jsonPath = given()
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 10)
@@ -333,6 +347,12 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
     @DisplayName("Decline invitation of organization expected success")
     public void declineInvitationOfOrganizationExpectedSuccess() {
         final String invitationId = "6d2718fd-d2b0-4ed2-9074-9bcc2f7c28d1";
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setFullName("Test User");
+
+        Mockito.when(authClient.getUserById(Mockito.anyLong()))
+                .thenReturn(userResponse);
 
         given()
                 .contentType(ContentType.JSON)

@@ -3,8 +3,8 @@ package com.crm.main.facade;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.service.OrganizationService;
 import com.crm.main.service.assignments.OrganizationUserRoleAssignmentService;
-import com.crm.sharedlib.annotations.Facade;
-import com.crm.sharedlib.dto.response.RoleResponse;
+import com.crm.sharedlib.core.annotations.Facade;
+import com.crm.sharedlib.core.dto.response.RoleResponse;
 import lombok.RequiredArgsConstructor;
 
 @Facade
@@ -17,22 +17,22 @@ public class OrganizationUserRoleFacade {
 
     public RoleResponse addRoleForUserInOrganization(
             Long organizationId, Long roleId,
-            Long userId
+            Long userId, Long authorizedUser
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
 
-        return assignmentService.addRoleForUserInOrganization(organization, roleId, userId);
+        return assignmentService.addRoleForUserInOrganization(organization, roleId, userId, authorizedUser);
     }
 
     public void removeRoleForUserOrganization(
             Long organizationId, Long roleId,
-            Long userId
+            Long userId, Long authorizedUser
     ) {
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
 
-        assignmentService.removeRoleForUserOrganization(organization, roleId, userId);
+        assignmentService.removeRoleForUserOrganization(organization, roleId, userId, authorizedUser);
     }
 
 }

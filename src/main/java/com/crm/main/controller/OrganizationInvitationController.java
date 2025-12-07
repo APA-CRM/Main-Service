@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import static com.crm.sharedlib.consts.CrmConstants.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
 
 @RestController
 @RequestMapping("/api/organizations")

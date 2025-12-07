@@ -2,11 +2,11 @@ package com.crm.main.controller;
 
 import com.crm.main.dto.request.UserAndRolesFilterRequest;
 import com.crm.main.facade.OrganizationUsersFacade;
-import com.crm.sharedlib.dto.response.UserWithRoleResponse;
+import com.crm.sharedlib.core.dto.response.UserWithRoleResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +27,8 @@ public class OrganizationUsersController {
     }
 
     @DeleteMapping("/{organizationId}/users/{userId}")
-    public ResponseEntity<Void> removeUserFromOrganization(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeUserFromOrganization(
             @PathVariable("organizationId") Long organizationId,
             @PathVariable("userId") Long userIdToAddToOrganization
     ) {
@@ -35,8 +36,6 @@ public class OrganizationUsersController {
                 organizationId,
                 userIdToAddToOrganization
         );
-
-        return ResponseEntity.noContent().build();
     }
 
 }
