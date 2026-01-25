@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "${app.clients.auth-service.name}", configuration = FeignClientConfig.class)
+@FeignClient(name = "${app.clients.file-service.name}", configuration = FeignClientConfig.class)
 public interface FileClient {
 
     @PostMapping("/api/internal/files/default")
