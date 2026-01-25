@@ -1,2 +1,3 @@
-DELETE FROM organization_invitation
+DELETE
+FROM organization_invitation
 WHERE 1 = 1;

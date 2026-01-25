@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(value = "auth-service", configuration = FeignClientConfig.class)
+@FeignClient(value = "${app.clients.auth-service.name}", configuration = FeignClientConfig.class)
 public interface AuthClient {
 
     @PostMapping("/api/internal/roles")
