@@ -23,6 +23,7 @@ public class OrganizationAccessInterceptor extends PublicEndpointInterceptor {
     private final OrganizationUserService userService;
 
     private final List<Endpoint> PUBLIC_ENDPOINTS = List.of(
+            new Endpoint(singletonList(HttpMethod.GET), "/actuator/**"),
             new Endpoint(singletonList(HttpMethod.GET), "/api/organizations/*/preview"),
             new Endpoint(List.of(HttpMethod.PATCH, HttpMethod.GET), "/api/organizations/invitations/**"),
             new Endpoint(List.of(HttpMethod.GET, HttpMethod.POST), "/api/organizations"),
