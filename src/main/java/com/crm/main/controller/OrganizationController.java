@@ -1,5 +1,8 @@
 package com.crm.main.controller;
 
+import com.crm.main.annotations.OrganizationId;
+import com.crm.main.annotations.RequiresOrganizationMembership;
+import com.crm.main.annotations.UserId;
 import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.dto.response.OrganizationPreviewResponse;
 import com.crm.main.dto.response.OrganizationResponse;
@@ -55,9 +58,12 @@ public class OrganizationController {
     }
 
     @PutMapping("/{organizationId}")
+    @RequiresOrganizationMembership
     public OrganizationResponse updateOrganizationById(
-            @PathVariable("organizationId")
+            @OrganizationId @PathVariable("organizationId")
             Long organizationId,
+            @RequestHeader(USER_ID_HEADER_NAME) @UserId
+            Long userId,
             @RequestBody OrganizationRequest request
     ) {
         return facade.updateOrganizationById(request, organizationId);
