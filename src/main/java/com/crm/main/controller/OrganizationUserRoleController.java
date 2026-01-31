@@ -1,5 +1,8 @@
 package com.crm.main.controller;
 
+import com.crm.main.annotations.OrganizationId;
+import com.crm.main.annotations.RequiresOrganizationMembership;
+import com.crm.main.annotations.UserId;
 import com.crm.main.facade.OrganizationUserRoleFacade;
 import com.crm.sharedlib.core.dto.response.RoleResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +19,24 @@ public class OrganizationUserRoleController {
     private final OrganizationUserRoleFacade facade;
 
     @PutMapping("/{organizationId}/users/{userId}/roles/{roleId}")
+    @RequiresOrganizationMembership
     public RoleResponse addRoleForUser(
-            @PathVariable("organizationId") Long organizationId,
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,
             @PathVariable("userId") Long userId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long authorizedUser
+            @RequestHeader(USER_ID_HEADER_NAME) @UserId Long authorizedUser
     ) {
         return facade.addRoleForUserInOrganization(organizationId, roleId, userId, authorizedUser);
     }
 
     @DeleteMapping("/{organizationId}/users/{userId}/roles/{roleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequiresOrganizationMembership
     public void removeRoleForUserOrganization(
-            @PathVariable("organizationId") Long organizationId,
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,
             @PathVariable("userId") Long userId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long authorizedUser
+            @RequestHeader(USER_ID_HEADER_NAME) @UserId Long authorizedUser
     ) {
         facade.removeRoleForUserOrganization(organizationId, roleId, userId, authorizedUser);
     }

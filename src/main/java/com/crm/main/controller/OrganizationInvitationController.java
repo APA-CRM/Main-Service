@@ -1,5 +1,8 @@
 package com.crm.main.controller;
 
+import com.crm.main.annotations.OrganizationId;
+import com.crm.main.annotations.RequiresOrganizationMembership;
+import com.crm.main.annotations.UserId;
 import com.crm.main.dto.request.OrganizationInvitationRequest;
 import com.crm.main.dto.response.OrganizationInvitationResponse;
 import com.crm.main.facade.OrganizationInvitationFacade;
@@ -26,12 +29,13 @@ public class OrganizationInvitationController {
     }
 
     @PostMapping("/{organizationId}/invitations")
+    @RequiresOrganizationMembership
     public OrganizationInvitationResponse inviteUserToOrganization(
             @Valid
             @RequestBody
             OrganizationInvitationRequest request,
-            @PathVariable("organizationId") Long organizationId,
-            @RequestHeader(USER_ID_HEADER_NAME) Long userId
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
+            @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId
     ) {
         return facade.inviteUserToOrganization(request, organizationId, userId);
     }
