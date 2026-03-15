@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"com.crm.sharedlib", "com.crm.main"})
+@ComponentScan("com.crm")
 @EnableFeignClients
 @EnableDiscoveryClient
 public class MainServiceApplication {

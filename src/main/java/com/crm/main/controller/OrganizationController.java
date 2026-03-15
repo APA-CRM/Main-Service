@@ -7,6 +7,9 @@ import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.dto.response.OrganizationPreviewResponse;
 import com.crm.main.dto.response.OrganizationResponse;
 import com.crm.main.facade.OrganizationFacade;
+import com.crm.sharedlib.core.enums.Action;
+import com.crm.sharedlib.core.enums.Resource;
+import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +62,7 @@ public class OrganizationController {
 
     @PutMapping("/{organizationId}")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.ORGANIZATIONS, action = Action.UPDATE)
     public OrganizationResponse updateOrganizationById(
             @OrganizationId @PathVariable("organizationId")
             Long organizationId,

@@ -6,6 +6,9 @@ import com.crm.main.annotations.UserId;
 import com.crm.main.dto.request.OrganizationInvitationRequest;
 import com.crm.main.dto.response.OrganizationInvitationResponse;
 import com.crm.main.facade.OrganizationInvitationFacade;
+import com.crm.sharedlib.core.enums.Action;
+import com.crm.sharedlib.core.enums.Resource;
+import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,7 @@ public class OrganizationInvitationController {
 
     @PostMapping("/{organizationId}/invitations")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.INVITATIONS, action = Action.CREATE)
     public OrganizationInvitationResponse inviteUserToOrganization(
             @Valid
             @RequestBody

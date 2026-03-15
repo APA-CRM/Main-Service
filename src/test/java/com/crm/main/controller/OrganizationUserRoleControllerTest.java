@@ -15,8 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Collections;
 
-import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -72,6 +71,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -93,6 +93,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -115,6 +116,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -137,6 +139,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .put(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -165,6 +168,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)
@@ -186,6 +190,7 @@ class OrganizationUserRoleControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{organizationId}/users/{userId}/roles/{roleId}",
                         organizationId, userId, roleId)

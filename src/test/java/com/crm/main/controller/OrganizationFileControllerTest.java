@@ -9,8 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.UUID;
 
-import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -37,6 +36,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
                 .then()
@@ -61,6 +61,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{organizationId}/files/root", organizationId)
                 .then()
@@ -86,6 +87,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
                 .then()
@@ -106,6 +108,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .post(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
                 .then()
@@ -131,6 +134,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .post(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
                 .then()
@@ -150,6 +154,7 @@ class OrganizationFileControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{organizationId}/files/{fileId}", organizationId, fileId)
                 .then()

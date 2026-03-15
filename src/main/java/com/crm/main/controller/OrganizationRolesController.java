@@ -7,6 +7,9 @@ import com.crm.main.facade.OrganizationRolesFacade;
 import com.crm.sharedlib.core.dto.request.RoleFilterRequest;
 import com.crm.sharedlib.core.dto.request.RoleRequest;
 import com.crm.sharedlib.core.dto.response.RoleResponse;
+import com.crm.sharedlib.core.enums.Action;
+import com.crm.sharedlib.core.enums.Resource;
+import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
@@ -30,6 +33,7 @@ public class OrganizationRolesController {
     @Deprecated(forRemoval = true)
     @GetMapping("/{organizationId}/roles")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.ROLES, action = Action.READ)
     public List<RoleResponse> getOrganizationRoles(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @RequestHeader(USER_ID_HEADER_NAME) @UserId
@@ -40,6 +44,7 @@ public class OrganizationRolesController {
 
     @PostMapping("/{organizationId}/roles")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.ROLES, action = Action.CREATE)
     public RoleResponse createRole(
             @Valid
             @RequestBody
@@ -53,6 +58,7 @@ public class OrganizationRolesController {
 
     @GetMapping("/{organizationId}/roles/filter")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.ROLES, action = Action.READ)
     public PagedModel<RoleResponse> filterOrganizationRoles(
             @Valid
             @ModelAttribute
@@ -66,6 +72,7 @@ public class OrganizationRolesController {
 
     @PutMapping("/{organizationId}/roles/{roleId}")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.ROLES, action = Action.UPDATE)
     public RoleResponse updateOrganizationRole(
             @Valid
             @RequestBody
@@ -81,6 +88,7 @@ public class OrganizationRolesController {
     @DeleteMapping("/{organizationId}/roles/{roleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.ROLES, action = Action.DELETE)
     public void deleteOrganizationRole(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,

@@ -21,8 +21,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.Collections;
 import java.util.List;
 
-import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -88,6 +87,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .get(BASE_URI + "/{organizationId}/roles", organizationId)
                 .then()
@@ -152,6 +152,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .body(request)
                 .post(BASE_URI + "/{organizationId}/roles", organizationId)
@@ -214,6 +215,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .queryParam("page", 0)
                 .queryParam("size", 5)
@@ -239,6 +241,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{organizationId}/roles/{roleId}", organizationId, roleId)
                 .then()
@@ -259,6 +262,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{organizationId}/roles/{roleId}", organizationId, roleId)
                 .then()

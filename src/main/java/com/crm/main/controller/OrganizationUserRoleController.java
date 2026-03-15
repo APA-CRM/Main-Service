@@ -5,6 +5,9 @@ import com.crm.main.annotations.RequiresOrganizationMembership;
 import com.crm.main.annotations.UserId;
 import com.crm.main.facade.OrganizationUserRoleFacade;
 import com.crm.sharedlib.core.dto.response.RoleResponse;
+import com.crm.sharedlib.core.enums.Action;
+import com.crm.sharedlib.core.enums.Resource;
+import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,7 @@ public class OrganizationUserRoleController {
 
     @PutMapping("/{organizationId}/users/{userId}/roles/{roleId}")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.USERS_ROLES, action = Action.CREATE)
     public RoleResponse addRoleForUser(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,
@@ -32,6 +36,7 @@ public class OrganizationUserRoleController {
     @DeleteMapping("/{organizationId}/users/{userId}/roles/{roleId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.USERS_ROLES, action = Action.DELETE)
     public void removeRoleForUserOrganization(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("roleId") Long roleId,

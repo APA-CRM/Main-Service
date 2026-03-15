@@ -6,6 +6,9 @@ import com.crm.main.annotations.UserId;
 import com.crm.main.dto.request.UserAndRolesFilterRequest;
 import com.crm.main.facade.OrganizationUsersFacade;
 import com.crm.sharedlib.core.dto.response.UserWithRoleResponse;
+import com.crm.sharedlib.core.enums.Action;
+import com.crm.sharedlib.core.enums.Resource;
+import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
@@ -23,6 +26,7 @@ public class OrganizationUsersController {
 
     @GetMapping("/{organizationId}/users/filter")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.USERS, action = Action.READ)
     public PagedModel<UserWithRoleResponse> filterOrganizationUsers(
             @Valid @ModelAttribute UserAndRolesFilterRequest request,
             @OrganizationId @PathVariable("organizationId") Long organizationId,
@@ -37,6 +41,7 @@ public class OrganizationUsersController {
     @DeleteMapping("/{organizationId}/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.USERS, action = Action.DELETE)
     public void removeUserFromOrganization(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("userId") Long userIdToAddToOrganization,
