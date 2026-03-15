@@ -5,6 +5,9 @@ import com.crm.main.annotations.RequiresOrganizationMembership;
 import com.crm.main.annotations.UserId;
 import com.crm.main.dto.response.OrganizationFileResponse;
 import com.crm.main.facade.OrganizationFileFacade;
+import com.crm.sharedlib.core.enums.Action;
+import com.crm.sharedlib.core.enums.Resource;
+import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ public class OrganizationFileController {
 
     @GetMapping("/{organizationId}/files/{fileId}")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.FILES, action = Action.READ)
     public OrganizationFileResponse getOrganizationFile(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @RequestHeader(USER_ID_HEADER_NAME) @UserId
@@ -33,6 +37,7 @@ public class OrganizationFileController {
 
     @GetMapping("/{organizationId}/files/root")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.FILES, action = Action.READ)
     public OrganizationFileResponse getRootOrganizationFile(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @RequestHeader(USER_ID_HEADER_NAME) @UserId
@@ -43,6 +48,7 @@ public class OrganizationFileController {
 
     @PostMapping("/{organizationId}/files/{fileId}")
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.FILES, action = Action.CREATE)
     public OrganizationFileResponse createOrganizationFile(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("fileId") UUID fileId,
@@ -55,6 +61,7 @@ public class OrganizationFileController {
     @DeleteMapping("/{organizationId}/files/{fileId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @RequiresOrganizationMembership
+    @RequiresPermission(resource = Resource.FILES, action = Action.DELETE)
     public void deleteOrganizationFile(
             @OrganizationId @PathVariable("organizationId") Long organizationId,
             @PathVariable("fileId") UUID fileId,

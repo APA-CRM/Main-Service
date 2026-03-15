@@ -14,8 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
-import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -106,6 +105,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .queryParam("page", 0)
                 .queryParam("size", 5)
                 .when()
@@ -146,6 +146,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .queryParam("page", 0)
                 .queryParam("size", 5)
                 .queryParam("rolesId", List.of(100L, 101L))
@@ -171,6 +172,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .when()
                 .delete(BASE_URI + "/{organizationId}/users/{userId}", organizationId, userId)
                 .then()

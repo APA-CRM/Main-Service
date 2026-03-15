@@ -27,8 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.crm.sharedlib.core.consts.CrmHeaders.ORGANIZATION_ID_HEADER_NAME;
-import static com.crm.sharedlib.core.consts.CrmHeaders.USER_ID_HEADER_NAME;
+import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -83,6 +82,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/invitations", organizationId)
@@ -129,6 +129,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/invitations", organizationId)
@@ -175,6 +176,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/invitations", organizationId)
@@ -211,6 +213,7 @@ class OrganizationInvitationControllerTest extends BaseIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(USER_ID_HEADER_NAME, 1)
                 .header(ORGANIZATION_ID_HEADER_NAME, 100)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
                 .body(request)
                 .when()
                 .post(BASE_URI + "/{organizationId}/invitations", organizationId)
