@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static com.crm.main.enums.OrganizationMessage.USER_HAS_BEEN_ADDED_TO_THE_ORGANIZATION;
@@ -75,7 +76,8 @@ public class OrganizationUserAssignmentService {
 
         messagingService.sendMessageToOrganization(
                 organizationId, message.getTitle(), message.getMessageCode(),
-                message.getMessage().formatted(user.getFullName(), role.getName())
+                message.getMessage().formatted(user.getFullName(), role.getName()),
+                Map.of("userId", userId)
         );
 
     }
