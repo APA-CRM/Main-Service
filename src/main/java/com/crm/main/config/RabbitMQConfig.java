@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.crm.main.constants.RabbitConstants.*;
-import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.ORGANIZATION_USER_ROLES_SYNC_QUEUE;
-import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.SEND_INVITATION_OF_ORGANIZATION;
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.*;
 
 @Configuration
 @EnableRabbit
@@ -35,32 +33,26 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     }
 
     @Bean
-    public Binding OrgUserRoleChangeBinding(
-            TopicExchange mainServiceTopicExchanger,
-            Queue orgUserSyncRoles
-    ) {
-        return BindingBuilder
-                .bind(orgUserSyncRoles)
-                .to(mainServiceTopicExchanger)
-                .with(ORGANIZATION_USER_ROLE_CHANGE_ROUTING_KEY);
-    }
-
-    @Bean
     public Queue sendInvitationOfOrganizationQueue() {
         return QueueBuilder
-                .durable(SEND_INVITATION_OF_ORGANIZATION)
+                .durable(SEND_INVITATION_OF_ORGANIZATION_ROUTING_KEY)
                 .build();
     }
 
     @Bean
-    public Binding invitationCreatedBinding(
-            TopicExchange mainServiceTopicExchanger,
-            Queue sendInvitationOfOrganizationQueue
-    ) {
+    public Binding OrgUserRoleChangeBinding() {
         return BindingBuilder
-                .bind(sendInvitationOfOrganizationQueue)
-                .to(mainServiceTopicExchanger)
-                .with(ORGANIZATION_INVITATION_CREATED);
+                .bind(orgUserSyncRoles())
+                .to(mainServiceTopicExchanger())
+                .with(ORGANIZATION_USER_ROLE_CHANGE_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding invitationCreatedBinding() {
+        return BindingBuilder
+                .bind(sendInvitationOfOrganizationQueue())
+                .to(mainServiceTopicExchanger())
+                .with(ORGANIZATION_INVITATION_CREATED_ROUTING_KEY);
     }
 
 

@@ -22,14 +22,13 @@
         <spring-cloud.version>2025.0.0</spring-cloud.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <rest-assumed.version>5.5.1</rest-assumed.version>
-        <jwt.version>0.12.6</jwt.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.github.APA-CRM</groupId>
             <artifactId>crm-shared-lib</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>0.2.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
