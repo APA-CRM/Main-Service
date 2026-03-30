@@ -3,8 +3,6 @@ package com.crm.main.controller;
 import com.crm.main.BaseIntegrationTest;
 import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.feign.AuthClient;
-import com.crm.main.feign.FileClient;
-import com.crm.sharedlib.core.dto.response.FileIdResponse;
 import com.crm.sharedlib.core.dto.response.RoleResponse;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +12,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.util.UUID;
 
 import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
@@ -33,9 +29,6 @@ class OrganizationControllerTest extends BaseIntegrationTest {
 
     @MockitoBean
     private AuthClient authClient;
-
-    @MockitoBean
-    private FileClient fileClient;
 
     @MockitoBean
     private RabbitTemplate rabbitTemplate;
@@ -59,9 +52,6 @@ class OrganizationControllerTest extends BaseIntegrationTest {
 
         Mockito.when(authClient.createRole(Mockito.any()))
                 .thenReturn(response);
-
-        Mockito.when(fileClient.createDefaultDirectory(Mockito.any()))
-                .thenReturn(new FileIdResponse(UUID.randomUUID()));
 
         given()
                 .contentType(ContentType.JSON)
