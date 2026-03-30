@@ -47,6 +47,14 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     }
 
     @Bean
+    public Queue orgRootDirCreatedQueue() {
+        return QueueBuilder
+                .durable(ROOT_DIR_CREATED_REPLY_QUEUE)
+                .deliveryLimit(5)
+                .build();
+    }
+
+    @Bean
     public Binding createOrgRootDirBinding() {
         return BindingBuilder
                 .bind(createRootDirQueue())
