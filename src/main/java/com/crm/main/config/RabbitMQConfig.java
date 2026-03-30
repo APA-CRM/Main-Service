@@ -40,6 +40,21 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     }
 
     @Bean
+    public Queue createRootDirQueue() {
+        return QueueBuilder
+                .durable(CREATE_ROOT_DIR_QUEUE)
+                .build();
+    }
+
+    @Bean
+    public Binding createOrgRootDirBinding() {
+        return BindingBuilder
+                .bind(createRootDirQueue())
+                .to(mainServiceTopicExchanger())
+                .with(ORGANIZATION_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
     public Binding OrgUserRoleChangeBinding() {
         return BindingBuilder
                 .bind(orgUserSyncRoles())

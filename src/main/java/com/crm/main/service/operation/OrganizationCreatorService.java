@@ -3,11 +3,13 @@ package com.crm.main.service.operation;
 import com.crm.main.dto.request.OrganizationRequest;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.OrganizationRole;
-import com.crm.main.persistance.entity.OrganizationRoleUser;
 import com.crm.main.persistance.entity.OrganizationUser;
-import com.crm.main.service.*;
+import com.crm.main.service.OrganizationRoleService;
+import com.crm.main.service.OrganizationRoleUserService;
+import com.crm.main.service.OrganizationService;
+import com.crm.main.service.OrganizationUserService;
 import com.crm.main.service.producer.OrgUserRoleChangedProducer;
-import com.crm.main.service.wrapper.FileClientWrapper;
+import com.crm.main.service.producer.OrganizationCreatedProducer;
 import com.crm.main.service.wrapper.RoleClientWrapper;
 import com.crm.sharedlib.core.dto.request.CreateRoleRequest;
 import com.crm.sharedlib.core.dto.request.ResourceWithActionsRequest;
@@ -21,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,19 +32,16 @@ public class OrganizationCreatorService {
     private final OrganizationService organizationService;
     private final OrganizationUserService organizationUserService;
     private final OrganizationRoleUserService organizationRoleUserService;
-    private final OrganizationFileService fileService;
 
     private final RoleClientWrapper roleClientWrapper;
-    private final FileClientWrapper fileClientWrapper;
 
     private final OrgUserRoleChangedProducer roleChangedProducer;
+    private final OrganizationCreatedProducer organizationCreatedProducer;
 
     @Value("${app.roles.default-admin-name}")
     private String adminRoleName;
     @Value("${app.roles.default-member-name}")
     private String memberRoleName;
-    @Value("${app.files.default-root-dir-prefix-name}")
-    private String rootDirPrefixName;
 
     @Transactional
     public Organization createOrganization(
@@ -59,21 +57,13 @@ public class OrganizationCreatorService {
         OrganizationUser userOfOrganization =
                 organizationUserService.createUserOfOrganization(organization, userId);
 
-        OrganizationRoleUser roleForOrganizationUser =
-                organizationRoleUserService.createRoleForOrganizationUser(role, userOfOrganization);
-
-        createRootOrganizationDirectory(organization);
+        organizationRoleUserService.createRoleForOrganizationUser(role, userOfOrganization);
 
         roleChangedProducer.sendOrgUserRoleChanged(organization, userOfOrganization);
 
+        organizationCreatedProducer.sendOrganizationCreatedEvent(organization);
+
         return organization;
-    }
-
-    private void createRootOrganizationDirectory(Organization organization) {
-        UUID fileId =
-                fileClientWrapper.createDefaultDirectory(organization.getName() + " " + rootDirPrefixName);
-
-        fileService.createRootOrganizationFile(organization, fileId);
     }
 
     private OrganizationRole createAdminRoleForOrganization(Organization organization) {

@@ -21,7 +21,7 @@ public class OrganizationRoleUserService {
     private final OrganizationRoleUserRepository repository;
 
     @Transactional
-    public OrganizationRoleUser createRoleForOrganizationUser(
+    public void createRoleForOrganizationUser(
             OrganizationRole organizationRole,
             OrganizationUser organizationUser
     ) {
@@ -37,7 +37,7 @@ public class OrganizationRoleUserService {
         organizationRoleUser.setOrganizationRole(organizationRole);
         organizationRoleUser.setOrganizationUser(organizationUser);
 
-        return repository.save(organizationRoleUser);
+        repository.save(organizationRoleUser);
     }
 
     public OrganizationRoleUser getRoleOfUserOrganization(
