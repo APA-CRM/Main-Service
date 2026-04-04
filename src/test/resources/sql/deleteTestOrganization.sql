@@ -1,15 +1,11 @@
 DELETE
-FROM organization_role_user
-WHERE 1 = 1;
+FROM organization_role_user;
 
 DELETE
-FROM organization_role
-WHERE 1 = 1;
+FROM organization_role;
 
 DELETE
-FROM organization_user
-WHERE 1 = 1;
+FROM organization_user;
 
 DELETE
-FROM organization
-WHERE 1 = 1;
+FROM organization;
