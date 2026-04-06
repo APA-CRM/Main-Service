@@ -19,6 +19,7 @@ import java.util.UUID;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(
+        // TODO: Remove this index. It's unnecessary with unique index
         indexes = @Index(columnList = "file_id,organization_Id", name = "file_id_organization_id_index"),
         uniqueConstraints = @UniqueConstraint(columnNames = "file_id,organization_Id", name = "file_id_organization_id_uq")
 )
