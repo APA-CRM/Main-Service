@@ -51,7 +51,7 @@ public class CreateTaskDefaultPrioritiesConsumer {
                 priorities.add(taskPriority);
             }
 
-            taskPriorityService.createTaskProprieties(priorities);
+            taskPriorityService.createTaskPriorities(priorities);
 
             log.debug("Default task priorities for organization {} has been created", organizationId);
         } catch (Exception e) {
