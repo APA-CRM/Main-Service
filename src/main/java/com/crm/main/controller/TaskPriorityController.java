@@ -46,6 +46,7 @@ public class TaskPriorityController {
         return facade.getTaskPriority(taskPriorityId);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{organizationId}/tasks/priorities")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = Resource.TASK_PRIORITIES, action = Action.CREATE)
