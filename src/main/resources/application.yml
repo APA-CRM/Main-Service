@@ -1,0 +1,73 @@
+server:
+  port: '8080'
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${discovery.host}:${discovery.port}/eureka/
+spring:
+  rabbitmq:
+    password: ${rabbit.password}
+    host: ${rabbit.host}
+    port: ${rabbit.port}
+    username: ${rabbit.username}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: 'true'
+    show-sql: 'true'
+    open-in-view: 'false'
+  application:
+    name: main-service
+  datasource:
+    password: ${main.datasource.password}
+    username: ${main.datasource.username}
+    url: jdbc:postgresql://${main.datasource.host}:${main.datasource.port}/${main.datasource.database}
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: TRACE
+    com:
+      crm:
+        main: DEBUG
+    sql: DEBUG
+app:
+  tasks:
+    priorities:
+      default-values:
+        'Low': '#00FF00'
+        'High': '#FF4500'
+        'Medium': '#F2F224'
+    statuses:
+      default-values:
+        Canceled:
+          color: '#FF4500'
+          type: "CANCELED"
+        Done:
+          color: '#00FF00'
+          type: "DONE"
+        Blocked:
+          color: '#F2F224'
+          type: "BLOCKED"
+        "[In Progress]":
+          color: "#00BFFF"
+          type: "IN_PROGRESS"
+        "[To Do]":
+          color: "#E0E0E0"
+          type: "TODO"
+  invitation:
+    expiration-time: '259200'
+  ampq:
+    organisation-user-sync-roles:
+      queue:
+        ttl: '900000'
+  roles:
+    default-admin-name: Admin
+    default-member-name: Member
+  clients:
+    auth-service:
+      name: auth-service

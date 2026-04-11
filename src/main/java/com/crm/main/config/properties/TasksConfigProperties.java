@@ -1,5 +1,6 @@
 package com.crm.main.config.properties;
 
+import com.crm.main.enums.TaskStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,13 +17,33 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "app.tasks")
 public class TasksConfigProperties {
 
-    private Section priorities;
+    private PrioritiesSection priorities;
+
+    private StatusSection statuses;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Section {
+    public static class PrioritiesSection {
         private Map<String, String> defaultValues;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StatusSection {
+        private Map<String, StatusConfig> defaultValues;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StatusConfig {
+        private String color;
+
+        private TaskStatusType type;
     }
 }
