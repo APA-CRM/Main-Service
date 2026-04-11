@@ -24,11 +24,13 @@ public class TaskPriority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String color;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Organization organization;
 
     @CreatedDate
