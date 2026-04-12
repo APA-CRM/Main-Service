@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -17,8 +18,10 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.CREATE_DEFAULT_TASK_PRIORITIES_QUEUE;
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.MAIN_SERVICE_EXCHANGER_NAME;
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.ORGANIZATION_CREATED_ROUTING_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @Sql(scripts = "classpath:sql/insertTestOrganizations.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = {
@@ -35,18 +38,23 @@ class CreateTaskDefaultPrioritiesConsumerTest extends BaseIntegrationTestWithRab
     @MockitoSpyBean
     private TaskPriorityRepository priorityRepository;
 
+    @MockitoBean
+    private CreateTaskDefaultStatusesConsumer statusesConsumer;
+
     @Test
     @DisplayName("Create default priorities consumer expected success")
-    public void createDefaultPrioritiesConsumerExpectedSuccess() throws InterruptedException {
+    public void createDefaultPrioritiesConsumerExpectedSuccess() {
 
         OrgCreatedMessage message = new OrgCreatedMessage(100L, "NewPoshta");
 
-        rabbitTemplate.convertAndSend(CREATE_DEFAULT_TASK_PRIORITIES_QUEUE, message);
+        rabbitTemplate.convertAndSend(MAIN_SERVICE_EXCHANGER_NAME, ORGANIZATION_CREATED_ROUTING_KEY, message);
 
-        Thread.sleep(Duration.ofSeconds(2L));
-
-        Mockito.verify(priorityRepository, Mockito.atLeastOnce())
-                .saveAll(Mockito.any());
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(() ->
+                        Mockito.verify(priorityRepository, Mockito.atLeastOnce())
+                                .saveAll(Mockito.any())
+                );
 
         List<TaskPriority> priorities = priorityRepository.findAll();
 
