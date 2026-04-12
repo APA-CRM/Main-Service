@@ -1,0 +1,76 @@
+package com.crm.main.service.consumer;
+
+import com.crm.main.BaseIntegrationTestWithRabbitMQ;
+import com.crm.main.config.properties.TasksConfigProperties;
+import com.crm.main.persistance.entity.TaskStatus;
+import com.crm.main.persistance.repository.TaskStatusRepository;
+import com.crm.sharedlib.messaging.dto.amqp.OrgCreatedMessage;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.context.jdbc.Sql;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.MAIN_SERVICE_EXCHANGER_NAME;
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.ORGANIZATION_CREATED_ROUTING_KEY;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+
+@Sql(scripts = "classpath:sql/insertTestOrganizations.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {
+        "classpath:sql/deleteTestTaskStatuses.sql",
+        "classpath:sql/deleteTestOrganization.sql"
+}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+class CreateTaskDefaultStatusesConsumerTest extends BaseIntegrationTestWithRabbitMQ {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private TasksConfigProperties tasksConfigProperties;
+
+    @MockitoSpyBean
+    private TaskStatusRepository statusRepository;
+
+    @MockitoBean
+    private CreateTaskDefaultPrioritiesConsumer prioritiesConsumer;
+
+    @Test
+    @DisplayName("Create default priorities consumer expected success")
+    public void createDefaultPrioritiesConsumerExpectedSuccess() {
+
+        OrgCreatedMessage message = new OrgCreatedMessage(100L, "NewPoshta");
+
+        rabbitTemplate.convertAndSend(MAIN_SERVICE_EXCHANGER_NAME, ORGANIZATION_CREATED_ROUTING_KEY, message);
+
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(() ->
+                        Mockito.verify(statusRepository, Mockito.atLeastOnce())
+                                .saveAll(Mockito.any())
+                );
+
+        List<TaskStatus> priorities = statusRepository.findAll();
+
+        Map<String, TasksConfigProperties.StatusConfig> defaultValues = tasksConfigProperties.getStatuses().getDefaultValues();
+
+        assertThat(priorities)
+                .hasSize(defaultValues.size())
+                .allMatch(taskPriority -> {
+                    TasksConfigProperties.StatusConfig statusConfig = defaultValues.get(taskPriority.getName());
+
+                    return statusConfig != null
+                            && statusConfig.getColor().equals(taskPriority.getColor())
+                            && statusConfig.getType().equals(taskPriority.getType());
+                })
+                .map(taskPriority -> taskPriority.getOrganization().getId())
+                .allMatch(organizationId -> organizationId.equals(message.getOrganizationId()));
+    }
+
+}

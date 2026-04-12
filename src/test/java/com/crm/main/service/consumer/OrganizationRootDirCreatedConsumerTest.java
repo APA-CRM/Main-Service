@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.ROOT_DIR_CREATED_REPLY_QUEUE;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Sql(scripts = "classpath:sql/insertTestOrganizations.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -31,25 +32,25 @@ class OrganizationRootDirCreatedConsumerTest extends BaseIntegrationTestWithRabb
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired
-    private OrganizationFileRepository fileRepository;
-    @Autowired
     private OrganizationRepository organizationRepository;
 
     @MockitoSpyBean
-    private OrganizationRootDirCreatedConsumer consumer;
+    private OrganizationFileRepository fileRepository;
 
     @Test
     @DisplayName("Organization root dir created expected success")
-    public void organizationRootDirCreatedExpectedSuccess() throws InterruptedException {
+    public void organizationRootDirCreatedExpectedSuccess() {
 
         OrgRootDirCreatedMessage message = new OrgRootDirCreatedMessage(100L, UUID.randomUUID());
 
         rabbitTemplate.convertAndSend(ROOT_DIR_CREATED_REPLY_QUEUE, message);
 
-        Thread.sleep(Duration.ofSeconds(2L));
-
-        Mockito.verify(consumer, Mockito.atLeastOnce())
-                .organizationRootDirCreated(Mockito.any());
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .untilAsserted(() ->
+                        Mockito.verify(fileRepository, Mockito.atLeastOnce())
+                                .save(Mockito.any())
+                );
 
         Optional<Organization> organizationOptional = organizationRepository.findById(message.getOrganizationId());
 

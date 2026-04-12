@@ -1,0 +1,18 @@
+INSERT INTO task_status(id, name, color,
+                        type, organization_id,
+                        created_at, updated_at)
+VALUES (100, 'To Do', '#E0E0E0',
+        'TODO', 100,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (101, 'In Progress', '#00BFFF',
+        'IN_PROGRESS', 100,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (102, 'Done', '#00FF00',
+        'DONE', 100,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (103, 'Canceled', '#FF4500',
+        'CANCELED', 100,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       (104, 'Blocked', '#F2F224',
+        'BLOCKED', 100,
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

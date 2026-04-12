@@ -47,6 +47,20 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     }
 
     @Bean
+    public Queue createDefaultTaskPrioritiesQueue() {
+        return QueueBuilder
+                .durable(CREATE_DEFAULT_TASK_PRIORITIES_QUEUE)
+                .build();
+    }
+
+    @Bean
+    public Queue createDefaultTaskStatusesQueue() {
+        return QueueBuilder
+                .durable(CREATE_DEFAULT_TASK_STATUSES_QUEUE)
+                .build();
+    }
+
+    @Bean
     public Queue orgRootDirCreatedQueue() {
         return QueueBuilder
                 .durable(ROOT_DIR_CREATED_REPLY_QUEUE)
@@ -57,6 +71,22 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     public Binding createOrgRootDirBinding() {
         return BindingBuilder
                 .bind(createRootDirQueue())
+                .to(mainServiceTopicExchanger())
+                .with(ORGANIZATION_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding createDefaultTaskPrioritiesBinding() {
+        return BindingBuilder
+                .bind(createDefaultTaskPrioritiesQueue())
+                .to(mainServiceTopicExchanger())
+                .with(ORGANIZATION_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding createDefaultTaskStatusesBinding() {
+        return BindingBuilder
+                .bind(createDefaultTaskStatusesQueue())
                 .to(mainServiceTopicExchanger())
                 .with(ORGANIZATION_CREATED_ROUTING_KEY);
     }
