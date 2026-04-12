@@ -33,7 +33,7 @@ public class TaskStatus {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TaskStatusType statusType;
+    private TaskStatusType type;
 
     @ManyToOne(optional = false)
     private Organization organization;

@@ -46,7 +46,7 @@ public class CreateTaskDefaultStatusesConsumer {
 
                 taskStatus.setName(entry.getKey());
                 taskStatus.setColor(entry.getValue().getColor());
-                taskStatus.setStatusType(entry.getValue().getType());
+                taskStatus.setType(entry.getValue().getType());
                 taskStatus.setOrganization(organization);
 
                 priorities.add(taskStatus);
