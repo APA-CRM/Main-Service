@@ -26,6 +26,10 @@ public enum UserMessage {
     USER_HAS_BEEN_INVITED_TO_ORGANIZATION(
             "You have been invited to an organization",
             "You have been invited to organization '%s'"
+    ),
+    TASK_HAS_BEEN_ASSIGNED(
+            "Task has been assigned to you",
+            "Task %s has been assigned to you"
     );
 
     private final String title;

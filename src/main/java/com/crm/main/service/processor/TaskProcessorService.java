@@ -1,0 +1,77 @@
+package com.crm.main.service.processor;
+
+import com.crm.main.dto.request.CreateTaskRequest;
+import com.crm.main.enums.UserMessage;
+import com.crm.main.mapper.TaskMapper;
+import com.crm.main.persistance.entity.Organization;
+import com.crm.main.persistance.entity.Task;
+import com.crm.main.persistance.entity.TaskPriority;
+import com.crm.main.persistance.entity.TaskStatus;
+import com.crm.main.service.OrganizationService;
+import com.crm.main.service.TaskPriorityService;
+import com.crm.main.service.TaskService;
+import com.crm.main.service.TaskStatusService;
+import com.crm.main.service.task.updater.TaskStatusUpdater;
+import com.crm.main.service.task.updater.TaskStatusUpdaterFactory;
+import com.crm.sharedlib.messaging.service.MessagingService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
+import java.util.UUID;
+
+import static com.crm.main.enums.UserMessage.TASK_HAS_BEEN_ASSIGNED;
+
+@Service
+@RequiredArgsConstructor
+public class TaskProcessorService {
+
+    private final OrganizationService organizationService;
+    private final TaskStatusService taskStatusService;
+    private final TaskPriorityService taskPriorityService;
+    private final TaskService taskService;
+
+    private final TaskStatusUpdaterFactory taskStatusUpdaterFactory;
+
+    private final TaskMapper taskMapper;
+
+    private final MessagingService messagingService;
+
+    @Transactional
+    public Task createTask(Long organizationId, CreateTaskRequest request, Long userId) {
+
+        Organization organization =
+                organizationService.getOrganizationOrThrowException(organizationId);
+        TaskStatus taskStatus =
+                taskStatusService.getTaskStatusOrThrowException(request.getStatusId());
+        TaskPriority taskPriority =
+                taskPriorityService.getTaskPriorityOrThrowException(request.getPriorityId());
+
+        Task task = taskMapper.toTask(request);
+
+        task.setId(UUID.randomUUID());
+        task.setPriority(taskPriority);
+        task.setOrganization(organization);
+
+        task.setCreatedBy(userId);
+
+        TaskStatusUpdater statusUpdater = taskStatusUpdaterFactory.getTaskStatusUpdater(taskStatus);
+        statusUpdater.update(task, taskStatus);
+
+        sendMessageAboutAssignedTask(task, userId);
+
+        return taskService.saveTask(task);
+    }
+
+    private void sendMessageAboutAssignedTask(Task task, Long userId) {
+        UserMessage message = TASK_HAS_BEEN_ASSIGNED;
+
+        messagingService.sendMessageToUser(
+                userId, message.getTitle(), message.getMessageCode(),
+                message.getMessage().formatted(task.getTitle()),
+                Map.of("taskId", task.getId())
+        );
+    }
+
+}
