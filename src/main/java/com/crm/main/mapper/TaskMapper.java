@@ -1,12 +1,16 @@
 package com.crm.main.mapper;
 
 import com.crm.main.dto.request.TaskRequest;
+import com.crm.main.dto.response.TaskResponse;
 import com.crm.main.persistance.entity.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = {TaskStatusMapper.class, TaskPriorityMapper.class}
+)
 public interface TaskMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -18,5 +22,7 @@ public interface TaskMapper {
     @Mapping(target = "completedAt", ignore = true)
     @Mapping(target = "organization", ignore = true)
     Task toTask(TaskRequest request);
+
+    TaskResponse toResponse(Task task);
 
 }
