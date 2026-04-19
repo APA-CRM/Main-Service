@@ -1,6 +1,6 @@
 package com.crm.main.mapper;
 
-import com.crm.main.dto.request.CreateTaskRequest;
+import com.crm.main.dto.request.TaskRequest;
 import com.crm.main.persistance.entity.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +17,6 @@ public interface TaskMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "completedAt", ignore = true)
     @Mapping(target = "organization", ignore = true)
-    Task toTask(CreateTaskRequest request);
+    Task toTask(TaskRequest request);
 
 }

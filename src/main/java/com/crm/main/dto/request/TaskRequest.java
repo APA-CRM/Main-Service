@@ -13,7 +13,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateTaskRequest {
+public class TaskRequest {
 
     @NotBlank(message = "Title cannot be blank")
     private String title;

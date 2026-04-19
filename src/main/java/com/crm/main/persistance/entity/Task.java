@@ -38,13 +38,13 @@ public class Task {
 
     private Integer estimatedTime;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Organization organization;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private TaskStatus status;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private TaskPriority priority;
 
     private Long assignedTo;

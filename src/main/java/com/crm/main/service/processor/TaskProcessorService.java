@@ -1,6 +1,6 @@
 package com.crm.main.service.processor;
 
-import com.crm.main.dto.request.CreateTaskRequest;
+import com.crm.main.dto.request.TaskRequest;
 import com.crm.main.enums.UserMessage;
 import com.crm.main.mapper.TaskMapper;
 import com.crm.main.persistance.entity.Organization;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.crm.main.enums.UserMessage.TASK_HAS_BEEN_ASSIGNED;
@@ -39,7 +40,7 @@ public class TaskProcessorService {
     private final MessagingService messagingService;
 
     @Transactional
-    public Task createTask(Long organizationId, CreateTaskRequest request, Long userId) {
+    public Task createTask(Long organizationId, TaskRequest request, Long userId) {
 
         Organization organization =
                 organizationService.getOrganizationOrThrowException(organizationId);
@@ -62,6 +63,40 @@ public class TaskProcessorService {
         sendMessageAboutAssignedTask(task, userId);
 
         return taskService.saveTask(task);
+    }
+
+    @Transactional
+    public Task updateTask(UUID taskId, TaskRequest request) {
+        Task task = taskService.getTaskOrThrowException(taskId);
+
+        Long previouslyAssignedTo = task.getAssignedTo();
+
+        if (!Objects.equals(task.getStatus().getId(), request.getStatusId())) {
+            TaskStatus taskStatus =
+                    taskStatusService.getTaskStatusOrThrowException(request.getStatusId());
+            TaskStatusUpdater statusUpdater = taskStatusUpdaterFactory.getTaskStatusUpdater(taskStatus);
+            statusUpdater.update(task, taskStatus);
+        }
+
+        if (!Objects.equals(task.getPriority().getId(), request.getPriorityId())) {
+            TaskPriority taskPriority =
+                    taskPriorityService.getTaskPriorityOrThrowException(request.getPriorityId());
+            task.setPriority(taskPriority);
+
+        }
+
+        task = taskMapper.toTask(request);
+
+        if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())) {
+            sendMessageAboutAssignedTask(task, request.getAssignedTo());
+        }
+
+        return taskService.saveTask(task);
+    }
+
+    @Transactional
+    public void deleteTask(UUID taskId) {
+        taskService.deleteTask(taskId);
     }
 
     private void sendMessageAboutAssignedTask(Task task, Long userId) {
