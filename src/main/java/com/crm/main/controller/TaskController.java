@@ -73,7 +73,7 @@ public class TaskController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @GetMapping("/tasks/{taskId}")
+    @DeleteMapping("/tasks/{taskId}")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = TASKS, action = READ)
     public void deleteTask(
