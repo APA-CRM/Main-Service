@@ -3,12 +3,14 @@ package com.crm.main.controller;
 import com.crm.main.annotations.OrganizationId;
 import com.crm.main.annotations.RequiresOrganizationMembership;
 import com.crm.main.annotations.UserId;
+import com.crm.main.dto.request.TaskFilterRequest;
 import com.crm.main.dto.request.TaskRequest;
 import com.crm.main.dto.response.TaskResponse;
 import com.crm.main.facade.TaskFacade;
 import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,17 @@ public class TaskController {
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId
     ) {
         return facade.getTask(taskId);
+    }
+
+    @GetMapping("/tasks/filter")
+    @RequiresOrganizationMembership
+    @RequiresPermission(resource = TASKS, action = READ)
+    public Page<TaskResponse> filterTasks(
+            @OrganizationId Long organizationId,
+            @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
+            @Valid @ModelAttribute TaskFilterRequest request
+    ) {
+        return facade.filterTasks(request);
     }
 
     @GetMapping("/{organizationId}/tasks/")
