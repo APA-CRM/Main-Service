@@ -30,7 +30,7 @@ public class TaskPriority {
     @Column(nullable = false)
     private String color;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Organization organization;
 
     @CreatedDate

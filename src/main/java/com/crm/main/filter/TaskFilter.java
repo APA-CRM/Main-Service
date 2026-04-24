@@ -6,10 +6,7 @@ import com.crm.sharedlib.core.filter.criteria.BaseCriteriaFilter;
 import com.crm.sharedlib.core.filter.criteria.impl.DefaultCountableFilter;
 import com.crm.sharedlib.core.filter.criteria.impl.DefaultOrderByApplier;
 import com.crm.sharedlib.core.filter.criteria.impl.DefaultPageableFilter;
-import com.crm.sharedlib.core.filter.criteria.interfaces.CountableFilter;
-import com.crm.sharedlib.core.filter.criteria.interfaces.OrderByApplier;
-import com.crm.sharedlib.core.filter.criteria.interfaces.PageableBuilder;
-import com.crm.sharedlib.core.filter.criteria.interfaces.PredicateBuilder;
+import com.crm.sharedlib.core.filter.criteria.interfaces.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,6 +30,15 @@ public class TaskFilter extends BaseCriteriaFilter<Task> {
     @Override
     protected CountableFilter<Task> getCountableFilter() {
         return new DefaultCountableFilter<>();
+    }
+
+    @Override
+    protected JoinApplier<Task> getJoinApplier() {
+        return root -> {
+            root.fetch("organization");
+            root.fetch("status");
+            root.fetch("priority");
+        };
     }
 
     @Override

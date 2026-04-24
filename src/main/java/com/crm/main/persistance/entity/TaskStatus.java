@@ -35,7 +35,7 @@ public class TaskStatus {
     @Column(nullable = false)
     private TaskStatusType type;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Organization organization;
 
     @CreatedDate

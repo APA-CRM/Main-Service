@@ -51,7 +51,6 @@ public class TaskProcessorService {
 
         Task task = taskMapper.toTask(request);
 
-        task.setId(UUID.randomUUID());
         task.setPriority(taskPriority);
         task.setOrganization(organization);
 
@@ -59,8 +58,6 @@ public class TaskProcessorService {
 
         TaskStatusUpdater statusUpdater = taskStatusUpdaterFactory.getTaskStatusUpdater(taskStatus);
         statusUpdater.update(task, taskStatus);
-
-        sendMessageAboutAssignedTask(task, userId);
 
         return taskService.saveTask(task);
     }
@@ -85,7 +82,7 @@ public class TaskProcessorService {
 
         }
 
-        task = taskMapper.toTask(request);
+        task = taskMapper.updateTask(task, request);
 
         if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())) {
             sendMessageAboutAssignedTask(task, request.getAssignedTo());
@@ -99,7 +96,7 @@ public class TaskProcessorService {
         taskService.deleteTask(taskId);
     }
 
-    private void sendMessageAboutAssignedTask(Task task, Long userId) {
+    public void sendMessageAboutAssignedTask(Task task, Long userId) {
         UserMessage message = TASK_HAS_BEEN_ASSIGNED;
 
         messagingService.sendMessageToUser(

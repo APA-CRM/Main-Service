@@ -10,7 +10,7 @@ import com.crm.main.facade.TaskFacade;
 import com.crm.sharedlib.rbac.annotation.RequiresPermission;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,45 +27,45 @@ public class TaskController {
 
     private final TaskFacade facade;
 
-    @GetMapping("/tasks/{taskId}")
+    @GetMapping("/{organizationId}/tasks/{taskId}")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = TASKS, action = READ)
     public TaskResponse getTask(
             @PathVariable("taskId") UUID taskId,
-            @OrganizationId Long organizationId,
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId
     ) {
         return facade.getTask(taskId);
     }
 
-    @GetMapping("/tasks/filter")
+    @GetMapping("/{organizationId}/tasks/filter")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = TASKS, action = READ)
-    public Page<TaskResponse> filterTasks(
-            @OrganizationId Long organizationId,
+    public PagedModel<TaskResponse> filterTasks(
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @ModelAttribute TaskFilterRequest request
     ) {
         return facade.filterTasks(request);
     }
 
-    @GetMapping("/{organizationId}/tasks/")
+    @PostMapping("/{organizationId}/tasks")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = TASKS, action = CREATE)
     public TaskResponse createTask(
-            @OrganizationId Long organizationId,
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @RequestBody TaskRequest request
     ) {
         return facade.createTask(organizationId, request, userId);
     }
 
-    @PutMapping("/tasks/{taskId}")
+    @PutMapping("/{organizationId}/tasks/{taskId}")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = TASKS, action = UPDATE)
     public TaskResponse updateTask(
             @PathVariable("taskId") UUID taskId,
-            @OrganizationId Long organizationId,
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @RequestBody TaskRequest request
     ) {
@@ -73,12 +73,12 @@ public class TaskController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/tasks/{taskId}")
+    @DeleteMapping("/{organizationId}/tasks/{taskId}")
     @RequiresOrganizationMembership
     @RequiresPermission(resource = TASKS, action = READ)
     public void deleteTask(
             @PathVariable("taskId") UUID taskId,
-            @OrganizationId Long organizationId,
+            @OrganizationId @PathVariable("organizationId") Long organizationId,
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId
     ) {
         facade.deleteTask(taskId);

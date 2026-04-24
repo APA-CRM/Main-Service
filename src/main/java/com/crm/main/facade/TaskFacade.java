@@ -10,8 +10,8 @@ import com.crm.main.service.TaskService;
 import com.crm.main.service.processor.TaskProcessorService;
 import com.crm.sharedlib.core.annotations.Facade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PagedModel;
 
 import java.util.UUID;
 
@@ -32,16 +32,18 @@ public class TaskFacade {
         return taskMapper.toResponse(task);
     }
 
-    public Page<TaskResponse> filterTasks(TaskFilterRequest request) {
+    public PagedModel<TaskResponse> filterTasks(TaskFilterRequest request) {
         PageImpl<Task> tasks = taskFilter.filter(request);
 
-        return tasks.map(taskMapper::toResponse);
+        return new PagedModel<>(tasks.map(taskMapper::toResponse));
     }
 
     public TaskResponse createTask(
             Long organizationId, TaskRequest request, Long userId
     ) {
         Task task = processorService.createTask(organizationId, request, userId);
+
+        processorService.sendMessageAboutAssignedTask(task, request.getAssignedTo());
 
         return taskMapper.toResponse(task);
     }
