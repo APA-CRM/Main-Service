@@ -10,33 +10,28 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
 @Getter
 @Setter
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-        // TODO: Remove this index. It's unnecessary with unique index
-        indexes = @Index(columnList = "file_id,organization_Id", name = "file_id_organization_id_index"),
-        uniqueConstraints = @UniqueConstraint(columnNames = "file_id,organization_Id", name = "file_id_organization_id_uq")
-)
-public class OrganizationFile {
+@Table(indexes = @Index(name = "task_priority_organization_id_idx", columnList = "organization_id"))
+public class TaskPriority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
-    private UUID fileId;
+    private String name;
 
-    @ManyToOne(optional = false)
+    @Column(nullable = false)
+    private String color;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Organization organization;
-
-    @Column(nullable = false)
-    private Boolean isRoot = false;
 
     @CreatedDate
     private Instant createdAt;
