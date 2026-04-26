@@ -17,24 +17,16 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "app.tasks")
 public class TasksConfigProperties {
 
-    private PrioritiesSection priorities;
+    private Section<String> priorities;
 
-    private StatusSection statuses;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PrioritiesSection {
-        private Map<String, String> defaultValues;
-    }
+    private Section<StatusConfig> statuses;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class StatusSection {
-        private Map<String, StatusConfig> defaultValues;
+    public static class Section<T> {
+        private Map<String, T> defaultValues;
     }
 
     @Getter
