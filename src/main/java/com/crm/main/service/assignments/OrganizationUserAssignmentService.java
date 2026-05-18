@@ -6,6 +6,7 @@ import com.crm.main.persistance.entity.OrganizationRole;
 import com.crm.main.persistance.entity.OrganizationUser;
 import com.crm.main.service.OrganizationRoleUserService;
 import com.crm.main.service.OrganizationUserService;
+import com.crm.main.service.producer.OrgUserRoleChangedProducer;
 import com.crm.main.service.wrapper.RoleClientWrapper;
 import com.crm.main.service.wrapper.UserClientWrapper;
 import com.crm.sharedlib.core.dto.response.RoleResponse;
@@ -31,6 +32,8 @@ public class OrganizationUserAssignmentService {
     private final UserClientWrapper userClientWrapper;
     private final RoleClientWrapper roleClientWrapper;
 
+    private final OrgUserRoleChangedProducer roleChangedProducer;
+
     private final MessagingService messagingService;
 
     @Transactional
@@ -50,6 +53,8 @@ public class OrganizationUserAssignmentService {
                 organizationUserService.createUserOfOrganization(organization, userId);
 
         roleUserService.createRoleForOrganizationUser(role, userOfOrganization);
+
+        roleChangedProducer.sendOrgUserRoleChanged(organization, userOfOrganization);
 
         notifyOrganizationAboutAddedUser(organization.getId(), userId, role.getRoleId());
     }
