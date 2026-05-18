@@ -46,7 +46,7 @@ public class TaskController {
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @ModelAttribute TaskFilterRequest request
     ) {
-        return facade.filterTasks(request);
+        return facade.filterTasks(organizationId, request);
     }
 
     @PostMapping("/{organizationId}/tasks")

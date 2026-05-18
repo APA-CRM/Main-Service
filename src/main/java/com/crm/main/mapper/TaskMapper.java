@@ -34,6 +34,7 @@ public interface TaskMapper {
     @Mapping(target = "organization", ignore = true)
     Task updateTask(@MappingTarget Task task, TaskRequest request);
 
+    @Mapping(target = "organizationId", source = "organization.id")
     TaskResponse toResponse(Task task);
 
 }

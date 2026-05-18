@@ -22,6 +22,8 @@ public class TaskResponse {
 
     private Integer estimatedTime;
 
+    private Long organizationId;
+
     private TaskStatusResponse status;
 
     private TaskPriorityResponse priority;

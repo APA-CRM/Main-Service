@@ -79,8 +79,8 @@ class TaskControllerTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("Filter tasks expected success")
-    public void filterTasksExpectedSuccess() {
+    @DisplayName("Filter tasks when status is specified expected only one organization's tasks")
+    public void filterTasksWhenStatusSpecifiedExpectedSuccess() {
         final Long organizationId = 100L, statusId = 100L;
 
         given()
@@ -99,7 +99,31 @@ class TaskControllerTest extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("content", hasSize(2))
                 .body("content.status.id", everyItem(is(statusId.intValue())))
+                .body("content.organizationId", everyItem(is(organizationId.intValue())))
                 .body("page.totalElements", is(2));
+    }
+
+    @Test
+    @DisplayName("Filter tasks expected only one organization's tasks")
+    public void filterTasksExpectedOnly() {
+        final Long organizationId = 100L;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, "1")
+                .header(ORGANIZATION_ID_HEADER_NAME, organizationId)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
+                .queryParam("page", 0)
+                .queryParam("size", 10)
+                .when()
+                .get(BASE_URI + "/{organizationId}/tasks/filter", organizationId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("content", hasSize(3))
+                .body("content.organizationId", everyItem(is(organizationId.intValue())))
+                .body("page.totalElements", is(3));
     }
 
     @Test
