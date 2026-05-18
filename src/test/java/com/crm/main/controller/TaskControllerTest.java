@@ -133,7 +133,7 @@ class TaskControllerTest extends BaseIntegrationTest {
         final Long organizationId = 100L, userId = 1L;
 
         TaskRequest request = new TaskRequest();
-        request.setAssignedTo(100L);
+        request.setAssignedTo(101L);
         request.setTitle("New task");
         request.setDescription("Task to test creating of the task");
         request.setStatusId(100L);

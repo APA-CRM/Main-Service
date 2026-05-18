@@ -59,7 +59,13 @@ public class TaskProcessorService {
         TaskStatusUpdater statusUpdater = taskStatusUpdaterFactory.getTaskStatusUpdater(taskStatus);
         statusUpdater.update(task, taskStatus);
 
-        return taskService.saveTask(task);
+        Task savedTask = taskService.saveTask(task);
+
+        if (!Objects.equals(task.getAssignedTo(), userId)) {
+            sendMessageAboutAssignedTask(task, task.getAssignedTo());
+        }
+
+        return savedTask;
     }
 
     @Transactional
@@ -84,6 +90,7 @@ public class TaskProcessorService {
 
         task = taskMapper.updateTask(task, request);
 
+        // Do not duplicate message about task's assigment
         if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())) {
             sendMessageAboutAssignedTask(task, request.getAssignedTo());
         }
@@ -96,7 +103,7 @@ public class TaskProcessorService {
         taskService.deleteTask(taskId);
     }
 
-    public void sendMessageAboutAssignedTask(Task task, Long userId) {
+    private void sendMessageAboutAssignedTask(Task task, Long userId) {
         UserMessage message = TASK_HAS_BEEN_ASSIGNED;
 
         messagingService.sendMessageToUser(

@@ -47,8 +47,6 @@ public class TaskFacade {
     ) {
         Task task = processorService.createTask(organizationId, request, userId);
 
-        processorService.sendMessageAboutAssignedTask(task, request.getAssignedTo());
-
         return taskMapper.toResponse(task);
     }
 
