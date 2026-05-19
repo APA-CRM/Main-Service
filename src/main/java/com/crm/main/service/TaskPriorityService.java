@@ -4,6 +4,7 @@ import com.crm.main.dto.request.TaskPriorityRequest;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.TaskPriority;
 import com.crm.main.persistance.repository.TaskPriorityRepository;
+import com.crm.sharedlib.core.exception.ConflictException;
 import com.crm.sharedlib.core.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.List;
 public class TaskPriorityService {
 
     private final TaskPriorityRepository repository;
+
+    private final TaskService taskService;
 
     public List<TaskPriority> getTaskPrioritiesByOrganization(Organization organization) {
         return repository.findByOrganization(organization);
@@ -56,6 +59,10 @@ public class TaskPriorityService {
     @Transactional
     public void deleteTaskPriority(Long id) {
         TaskPriority taskPriority = getTaskPriorityOrThrowException(id);
+
+        if (taskService.taskExistsWithPriority(taskPriority)) {
+            throw new ConflictException("Cannot delete this priority because it’s used by existing tasks");
+        }
 
         repository.delete(taskPriority);
     }
