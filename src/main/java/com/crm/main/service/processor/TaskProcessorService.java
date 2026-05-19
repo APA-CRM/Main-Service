@@ -69,7 +69,7 @@ public class TaskProcessorService {
     }
 
     @Transactional
-    public Task updateTask(UUID taskId, TaskRequest request) {
+    public Task updateTask(UUID taskId, TaskRequest request, Long userId) {
         Task task = taskService.getTaskOrThrowException(taskId);
 
         Long previouslyAssignedTo = task.getAssignedTo();
@@ -91,7 +91,8 @@ public class TaskProcessorService {
         task = taskMapper.updateTask(task, request);
 
         // Do not duplicate message about task's assigment
-        if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())) {
+        if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())
+                && !Objects.equals(task.getAssignedTo(), userId)) {
             sendMessageAboutAssignedTask(task, request.getAssignedTo());
         }
 

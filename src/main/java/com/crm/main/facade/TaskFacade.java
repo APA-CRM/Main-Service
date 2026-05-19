@@ -51,9 +51,9 @@ public class TaskFacade {
     }
 
     public TaskResponse updateTask(
-            UUID taskId, TaskRequest request
+            UUID taskId, TaskRequest request, Long userId
     ) {
-        Task task = processorService.updateTask(taskId, request);
+        Task task = processorService.updateTask(taskId, request, userId);
 
         return taskMapper.toResponse(task);
     }
