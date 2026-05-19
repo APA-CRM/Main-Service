@@ -15,6 +15,8 @@ import org.springframework.data.web.PagedModel;
 
 import java.util.UUID;
 
+import static com.crm.main.constants.AppConstants.ORGANIZATION_ID_FILTER_KEY_NAME;
+
 @Facade
 @RequiredArgsConstructor
 public class TaskFacade {
@@ -32,7 +34,9 @@ public class TaskFacade {
         return taskMapper.toResponse(task);
     }
 
-    public PagedModel<TaskResponse> filterTasks(TaskFilterRequest request) {
+    public PagedModel<TaskResponse> filterTasks(Long organizationId, TaskFilterRequest request) {
+        request.addAdditionalField(ORGANIZATION_ID_FILTER_KEY_NAME, organizationId);
+
         PageImpl<Task> tasks = taskFilter.filter(request);
 
         return new PagedModel<>(tasks.map(taskMapper::toResponse));
@@ -43,15 +47,13 @@ public class TaskFacade {
     ) {
         Task task = processorService.createTask(organizationId, request, userId);
 
-        processorService.sendMessageAboutAssignedTask(task, request.getAssignedTo());
-
         return taskMapper.toResponse(task);
     }
 
     public TaskResponse updateTask(
-            UUID taskId, TaskRequest request
+            UUID taskId, TaskRequest request, Long userId
     ) {
-        Task task = processorService.updateTask(taskId, request);
+        Task task = processorService.updateTask(taskId, request, userId);
 
         return taskMapper.toResponse(task);
     }

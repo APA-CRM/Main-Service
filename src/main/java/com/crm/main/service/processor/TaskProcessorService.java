@@ -59,11 +59,17 @@ public class TaskProcessorService {
         TaskStatusUpdater statusUpdater = taskStatusUpdaterFactory.getTaskStatusUpdater(taskStatus);
         statusUpdater.update(task, taskStatus);
 
-        return taskService.saveTask(task);
+        Task savedTask = taskService.saveTask(task);
+
+        if (!Objects.equals(task.getAssignedTo(), userId)) {
+            sendMessageAboutAssignedTask(task, task.getAssignedTo());
+        }
+
+        return savedTask;
     }
 
     @Transactional
-    public Task updateTask(UUID taskId, TaskRequest request) {
+    public Task updateTask(UUID taskId, TaskRequest request, Long userId) {
         Task task = taskService.getTaskOrThrowException(taskId);
 
         Long previouslyAssignedTo = task.getAssignedTo();
@@ -84,7 +90,9 @@ public class TaskProcessorService {
 
         task = taskMapper.updateTask(task, request);
 
-        if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())) {
+        // Do not duplicate message about task's assigment
+        if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())
+                && !Objects.equals(task.getAssignedTo(), userId)) {
             sendMessageAboutAssignedTask(task, request.getAssignedTo());
         }
 
@@ -96,7 +104,7 @@ public class TaskProcessorService {
         taskService.deleteTask(taskId);
     }
 
-    public void sendMessageAboutAssignedTask(Task task, Long userId) {
+    private void sendMessageAboutAssignedTask(Task task, Long userId) {
         UserMessage message = TASK_HAS_BEEN_ASSIGNED;
 
         messagingService.sendMessageToUser(

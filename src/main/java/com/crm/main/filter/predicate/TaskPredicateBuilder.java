@@ -1,6 +1,7 @@
 package com.crm.main.filter.predicate;
 
 import com.crm.main.dto.request.TaskFilterRequest;
+import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.Task;
 import com.crm.main.persistance.entity.TaskPriority;
 import com.crm.main.persistance.entity.TaskStatus;
@@ -11,10 +12,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crm.main.constants.AppConstants.ORGANIZATION_ID_FILTER_KEY_NAME;
 import static java.util.Objects.isNull;
 
 public class TaskPredicateBuilder implements PredicateBuilder<Task> {
@@ -27,6 +30,7 @@ public class TaskPredicateBuilder implements PredicateBuilder<Task> {
         ArrayList<Predicate> predicates = new ArrayList<>();
 
         if (request instanceof TaskFilterRequest filterRequest) {
+            filterByOrganization(filterRequest, predicates, builder, root);
             filterByTitle(filterRequest, predicates, builder, root);
             filterByPriorityId(filterRequest, predicates, builder, root);
             filterByStatusId(filterRequest, predicates, builder, root);
@@ -38,6 +42,21 @@ public class TaskPredicateBuilder implements PredicateBuilder<Task> {
         }
 
         return predicates;
+    }
+
+    private void filterByOrganization(
+            TaskFilterRequest request, List<Predicate> predicates,
+            CriteriaBuilder builder, Root<Task> root
+    ) {
+        Long organizationId = request.getAdditionalField(ORGANIZATION_ID_FILTER_KEY_NAME, Long.class);
+
+        Assert.notNull(organizationId, "Organization Id cannot be null");
+
+        Join<Task, Organization> organization = root.join("organization");
+
+        predicates.add(
+                builder.equal(organization.get("id"), organizationId)
+        );
     }
 
     private void filterByTitle(

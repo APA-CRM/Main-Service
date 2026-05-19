@@ -46,7 +46,7 @@ public class TaskController {
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @ModelAttribute TaskFilterRequest request
     ) {
-        return facade.filterTasks(request);
+        return facade.filterTasks(organizationId, request);
     }
 
     @PostMapping("/{organizationId}/tasks")
@@ -69,7 +69,7 @@ public class TaskController {
             @UserId @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @RequestBody TaskRequest request
     ) {
-        return facade.updateTask(taskId, request);
+        return facade.updateTask(taskId, request, userId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

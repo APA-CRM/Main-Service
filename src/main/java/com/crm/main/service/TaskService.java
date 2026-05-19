@@ -1,6 +1,8 @@
 package com.crm.main.service;
 
 import com.crm.main.persistance.entity.Task;
+import com.crm.main.persistance.entity.TaskPriority;
+import com.crm.main.persistance.entity.TaskStatus;
 import com.crm.main.persistance.repository.TaskRepository;
 import com.crm.sharedlib.core.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +34,12 @@ public class TaskService {
         repository.delete(task);
     }
 
+    public boolean taskExistsWithStatus(TaskStatus status) {
+        return repository.existsByStatus(status);
+    }
+
+    public boolean taskExistsWithPriority(TaskPriority priority) {
+        return repository.existsByPriority(priority);
+    }
 
 }

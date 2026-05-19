@@ -4,6 +4,7 @@ import com.crm.main.dto.request.TaskStatusRequest;
 import com.crm.main.persistance.entity.Organization;
 import com.crm.main.persistance.entity.TaskStatus;
 import com.crm.main.persistance.repository.TaskStatusRepository;
+import com.crm.sharedlib.core.exception.ConflictException;
 import com.crm.sharedlib.core.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.List;
 public class TaskStatusService {
 
     private final TaskStatusRepository repository;
+
+    private final TaskService taskService;
 
     public List<TaskStatus> getTaskStatesByOrganization(Organization organization) {
         return repository.findByOrganization(organization);
@@ -58,6 +61,10 @@ public class TaskStatusService {
     @Transactional
     public void deleteTaskStatus(Long statusId) {
         TaskStatus taskStatus = getTaskStatusOrThrowException(statusId);
+
+        if (taskService.taskExistsWithStatus(taskStatus)) {
+            throw new ConflictException("Cannot delete this status because it’s used by existing tasks");
+        }
 
         repository.delete(taskStatus);
     }

@@ -187,5 +187,36 @@ class TaskStatusControllerTest extends BaseIntegrationTest {
         assertTrue(taskStatus.isEmpty());
     }
 
+    @Test
+    @DisplayName("Delete task status when a task use it expected conflict")
+    @Sql(scripts = {
+            "classpath:sql/insertTestOrganizations.sql",
+            "classpath:sql/insertTestTaskPriorities.sql",
+            "classpath:sql/insertTestTaskStatuses.sql",
+            "classpath:sql/insertTestTasks.sql"
+    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = {
+            "classpath:sql/deleteTestTasks.sql",
+            "classpath:sql/deleteTestTaskPriorities.sql",
+            "classpath:sql/deleteTestTaskStatuses.sql",
+            "classpath:sql/deleteTestOrganization.sql"
+    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void deleteTaskStatusWhenTaskUseItExpectedConflict() {
+        final Long organizationId = 100L, statusId = 100L;
+
+        given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, "1")
+                .header(ORGANIZATION_ID_HEADER_NAME, organizationId)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
+                .when()
+                .delete(BASE_URI + "/{organizationId}/tasks/statuses/{statusId}", organizationId, statusId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .body("message", is("Cannot delete this status because it’s used by existing tasks"));
+    }
+
 
 }
