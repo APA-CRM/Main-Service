@@ -4,6 +4,17 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${discovery.host}:${discovery.port}/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: main-service
 spring:
   rabbitmq:
     password: ${rabbit.password}
