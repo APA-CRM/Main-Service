@@ -5,6 +5,11 @@ eureka:
     serviceUrl:
       defaultZone: http://${discovery.host}:${discovery.port}/eureka/
 management:
+  health:
+    readinessState:
+      enabled: 'true'
+    livenessState:
+      enabled: 'true'
   endpoints:
     web:
       exposure:
@@ -12,6 +17,9 @@ management:
   endpoint:
     prometheus:
       enabled: true
+    health:
+      probes:
+        enabled: 'true'
   metrics:
     tags:
       application: main-service
