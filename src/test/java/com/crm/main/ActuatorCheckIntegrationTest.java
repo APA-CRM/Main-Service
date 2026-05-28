@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
-public class ActuatorCheckIntegrationTest extends BaseIntegrationTestWithRabbitMQ {
+public class ActuatorCheckIntegrationTest extends BaseIntegrationTest {
 
     private static final String BASE_URI = "/actuator";
 
