@@ -54,6 +54,13 @@ logging:
       crm:
         main: DEBUG
     sql: DEBUG
+jobrunr:
+  job-scheduler:
+    enabled: 'true'
+  dashboard:
+    enabled: 'false'
+  background-job-server:
+    enabled: 'false'
 app:
   tasks:
     priorities:
