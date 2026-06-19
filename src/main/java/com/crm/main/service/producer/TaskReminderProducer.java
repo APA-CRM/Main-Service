@@ -1,0 +1,39 @@
+package com.crm.main.service.producer;
+
+import com.crm.main.persistance.entity.Task;
+import com.crm.sharedlib.messaging.dto.amqp.TaskReminderMessage;
+import com.crm.sharedlib.messaging.dto.amqp.TaskReminderMessage.TaskExtraInfo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Service;
+
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.MAIN_SERVICE_EXCHANGER_NAME;
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.REMIND_ABOUT_TASK_QUEUE;
+
+@Service
+@RequiredArgsConstructor
+public class TaskReminderProducer {
+
+    private final RabbitTemplate rabbitTemplate;
+
+    public void remindAboutTask(Task task) {
+        TaskReminderMessage message = new TaskReminderMessage();
+        message.setTaskId(task.getId());
+        message.setTitle(task.getTitle());
+        message.setCreatedAt(task.getCreatedAt());
+        message.setDueDate(task.getDueDate());
+        message.setOrganizationId(task.getOrganization().getId());
+        message.setOrganizationName(task.getOrganization().getName());
+        message.setStatus(new TaskExtraInfo(
+                task.getStatus().getName(),
+                task.getStatus().getColor())
+        );
+        message.setPriority(new TaskExtraInfo(
+                task.getPriority().getName(),
+                task.getPriority().getColor())
+        );
+
+        rabbitTemplate.convertAndSend(MAIN_SERVICE_EXCHANGER_NAME, REMIND_ABOUT_TASK_QUEUE, message);
+    }
+
+}

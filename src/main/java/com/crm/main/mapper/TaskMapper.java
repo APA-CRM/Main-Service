@@ -14,6 +14,7 @@ import org.mapstruct.MappingTarget;
 )
 public interface TaskMapper {
 
+    @Mapping(target = "reminderJobId", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "priority", ignore = true)
@@ -24,6 +25,7 @@ public interface TaskMapper {
     @Mapping(target = "organization", ignore = true)
     Task toTask(TaskRequest request);
 
+    @Mapping(target = "reminderJobId", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "priority", ignore = true)
