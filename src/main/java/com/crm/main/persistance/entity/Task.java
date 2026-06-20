@@ -55,6 +55,8 @@ public class Task {
 
     private Instant reminderAt;
 
+    private Boolean isReminded = false;
+
     private UUID reminderJobId;
 
     private Instant completedAt;
