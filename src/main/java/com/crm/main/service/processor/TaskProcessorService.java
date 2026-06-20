@@ -17,7 +17,7 @@ import com.crm.main.service.task.updater.TaskStatusUpdaterFactory;
 import com.crm.sharedlib.messaging.service.MessagingService;
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.jobs.JobId;
-import org.jobrunr.scheduling.JobRequestScheduler;
+import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +37,6 @@ public class TaskProcessorService {
     private final TaskStatusService taskStatusService;
     private final TaskPriorityService taskPriorityService;
     private final TaskService taskService;
-
-    private final JobRequestScheduler jobScheduler;
 
     private final TaskStatusUpdaterFactory taskStatusUpdaterFactory;
 
@@ -114,7 +112,7 @@ public class TaskProcessorService {
     public void deleteTask(UUID taskId) {
         Task task = taskService.getTaskOrThrowException(taskId);
         if (nonNull(task.getReminderJobId())) {
-            jobScheduler.delete(task.getReminderJobId());
+            BackgroundJobRequest.delete(task.getReminderJobId());
         }
 
         taskService.deleteTask(task);
@@ -124,7 +122,7 @@ public class TaskProcessorService {
         if (isNull(request.getReminderAt())) {
             task.setReminderAt(null);
             if (nonNull(task.getReminderJobId())) {
-                jobScheduler.delete(task.getReminderJobId());
+                BackgroundJobRequest.delete(task.getReminderJobId());
             }
             task.setReminderJobId(null);
             task.setIsReminded(false);
@@ -133,11 +131,10 @@ public class TaskProcessorService {
         }
 
         if (nonNull(task.getReminderJobId())) {
-            jobScheduler.delete(task.getReminderJobId());
+            BackgroundJobRequest.delete(task.getReminderJobId());
         }
 
-        JobId jobId = jobScheduler
-                .schedule(request.getReminderAt(), new TaskReminderJobRequest(task.getId()));
+        JobId jobId = BackgroundJobRequest.schedule(request.getReminderAt(), new TaskReminderJobRequest(task.getId()));
 
         task.setReminderJobId(jobId.asUUID());
         task.setIsReminded(false);

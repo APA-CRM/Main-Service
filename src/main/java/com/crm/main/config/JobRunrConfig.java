@@ -1,6 +1,7 @@
 package com.crm.main.config;
 
 import org.jobrunr.jobs.mappers.JobMapper;
+import org.jobrunr.server.BackgroundJobServerConfiguration;
 import org.jobrunr.storage.StorageProvider;
 import org.jobrunr.storage.sql.postgres.PostgresStorageProvider;
 import org.jobrunr.utils.mapper.jackson.JacksonJsonMapper;
@@ -23,6 +24,13 @@ public class JobRunrConfig {
     @Bean
     public JobMapper jobMapper() {
         return new JobMapper(new JacksonJsonMapper());
+    }
+
+    @Bean
+    public BackgroundJobServerConfiguration backgroundJobServerConfiguration() {
+        return BackgroundJobServerConfiguration
+                .usingStandardBackgroundJobServerConfiguration()
+                .andName("Main-service");
     }
 
 }

@@ -3,6 +3,7 @@ package com.crm.main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import jakarta.annotation.PostConstruct;
+import org.jobrunr.jobs.mappers.JobMapper;
 import org.jobrunr.storage.StorageProvider;
 import org.jobrunr.storage.sql.h2.H2StorageProvider;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,10 +39,12 @@ public abstract class BaseIntegrationTest {
 
         @Bean
         @Primary
-        public StorageProvider testStorageProvider(DataSource dataSource) {
-            return new H2StorageProvider(dataSource);
-        }
+        public StorageProvider testStorageProvider(DataSource dataSource, JobMapper jobMapper) {
+            H2StorageProvider storageProvider = new H2StorageProvider(dataSource);
+            storageProvider.setJobMapper(jobMapper);
 
+            return storageProvider;
+        }
     }
 
 }

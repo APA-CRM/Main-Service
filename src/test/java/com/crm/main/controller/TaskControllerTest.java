@@ -6,6 +6,7 @@ import com.crm.main.persistance.entity.Task;
 import com.crm.main.persistance.repository.TaskRepository;
 import com.crm.sharedlib.messaging.service.MessagingService;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,13 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.crm.sharedlib.core.consts.CrmHeaders.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -168,6 +170,59 @@ class TaskControllerTest extends BaseIntegrationTest {
         // Verify that message about assigned has been sent to the user
         Mockito.verify(messagingService, Mockito.atLeastOnce())
                 .sendMessageToUser(eq(request.getAssignedTo()), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("Create task expected success")
+    public void createTaskWhenShouldBeRemindedExpectedSuccess() {
+
+        final Long organizationId = 100L, userId = 1L;
+
+        TaskRequest request = new TaskRequest();
+        request.setTitle("New taskOptional");
+        request.setDescription("Task to test creating of the taskOptional");
+        request.setStatusId(100L);
+        request.setPriorityId(100L);
+        request.setEstimatedTime(4);
+        request.setReminderAt(Instant.now().plusSeconds(120));
+
+        JsonPath jsonPath = given()
+                .contentType(ContentType.JSON)
+                .header(USER_ID_HEADER_NAME, userId)
+                .header(ORGANIZATION_ID_HEADER_NAME, organizationId)
+                .header(USER_PERMISSIONS_HEADER_NAME, "ALL:ALL;")
+                .body(request)
+                .when()
+                .post(BASE_URI + "/{organizationId}/tasks", organizationId)
+                .then()
+                .log().all()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", notNullValue())
+                .body("title", is(request.getTitle()))
+                .body("description", is(request.getDescription()))
+                .body("estimatedTime", is(request.getEstimatedTime()))
+                .body("status.id", is(request.getStatusId().intValue()))
+                .body("priority.id", is(request.getPriorityId().intValue()))
+                .body("reminderAt", is(request.getReminderAt().toString()))
+                .body("createdBy", is(1))
+                .body("dueDate", nullValue())
+                .body("createdAt", notNullValue())
+                .body("updatedAt", notNullValue())
+                .extract().jsonPath();
+
+        // Verify that message about assigned has been sent to the user
+        Mockito.verify(messagingService, Mockito.atLeastOnce())
+                .sendMessageToUser(eq(request.getAssignedTo()), any(), any(), any(), any());
+
+        Optional<Task> taskOptional = taskRepository.findById(jsonPath.getUUID("id"));
+
+        assertTrue(taskOptional.isPresent(), "Task is not found, expected to be found");
+
+        Task task = taskOptional.get();
+
+        assertNotNull(task.getReminderJobId(), "Reminder Job ID is null, expected non null value");
+        assertFalse(task.getIsReminded(), "Is reminded is true, expected false");
     }
 
     @Test

@@ -60,7 +60,7 @@ jobrunr:
   dashboard:
     enabled: 'false'
   background-job-server:
-    enabled: 'false'
+    enabled: 'true'
 app:
   tasks:
     priorities:
