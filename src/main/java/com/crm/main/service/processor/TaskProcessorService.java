@@ -97,9 +97,9 @@ public class TaskProcessorService {
 
         }
 
-        task = taskMapper.updateTask(task, request);
-
         createOrUpdateTaskReminder(task, request);
+
+        task = taskMapper.updateTask(task, request);
 
         // Do not duplicate message about task's assigment
         if (!Objects.equals(previouslyAssignedTo, request.getAssignedTo())
@@ -127,14 +127,20 @@ public class TaskProcessorService {
                 jobScheduler.delete(task.getReminderJobId());
             }
             task.setReminderJobId(null);
+            task.setIsReminded(false);
 
             return;
+        }
+
+        if (nonNull(task.getReminderJobId())) {
+            jobScheduler.delete(task.getReminderJobId());
         }
 
         JobId jobId = jobScheduler
                 .schedule(request.getReminderAt(), new TaskReminderJobRequest(task.getId()));
 
         task.setReminderJobId(jobId.asUUID());
+        task.setIsReminded(false);
     }
 
     private void sendMessageAboutAssignedTask(Task task, Long userId) {

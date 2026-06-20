@@ -55,6 +55,8 @@ public class TaskReminderJobHandler implements JobRequestHandler<TaskReminderJob
         producer.remindAboutTask(task, emails);
 
         task.setIsReminded(true);
+        task.setReminderAt(null);
+        task.setReminderJobId(null);
         taskService.saveTask(task);
 
         log.debug("Task {} was sent to the queue about reminding the task", jobRequest.getTaskId());
