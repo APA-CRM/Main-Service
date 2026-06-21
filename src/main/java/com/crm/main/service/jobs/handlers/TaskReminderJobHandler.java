@@ -13,7 +13,6 @@ import org.jobrunr.jobs.lambdas.JobRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,6 @@ public class TaskReminderJobHandler implements JobRequestHandler<TaskReminderJob
 
     @Override
     @Job(name = "Task's reminder job")
-    @Transactional
     public void run(TaskReminderJobRequest jobRequest) {
         Task task = taskService.getTaskOrThrowException(jobRequest.getTaskId());
 

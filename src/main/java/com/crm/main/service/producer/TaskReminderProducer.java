@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.MAIN_SERVICE_EXCHANGER_NAME;
-import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.REMIND_ABOUT_TASK_QUEUE;
+import static com.crm.sharedlib.messaging.constants.RabbitMQConstants.TASK_REMINDER_ROUTING_KEY;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class TaskReminderProducer {
                 task.getPriority().getColor())
         );
 
-        rabbitTemplate.convertAndSend(MAIN_SERVICE_EXCHANGER_NAME, REMIND_ABOUT_TASK_QUEUE, message);
+        rabbitTemplate.convertAndSend(MAIN_SERVICE_EXCHANGER_NAME, TASK_REMINDER_ROUTING_KEY, message);
     }
 
 }

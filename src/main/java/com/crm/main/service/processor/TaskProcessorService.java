@@ -64,9 +64,9 @@ public class TaskProcessorService {
         TaskStatusUpdater statusUpdater = taskStatusUpdaterFactory.getTaskStatusUpdater(taskStatus);
         statusUpdater.update(task, taskStatus);
 
-        createOrUpdateTaskReminder(task, request);
-
         Task savedTask = taskService.saveTask(task);
+
+        createOrUpdateTaskReminder(task, request);
 
         if (!Objects.equals(task.getAssignedTo(), userId)) {
             sendMessageAboutAssignedTask(task, task.getAssignedTo());
