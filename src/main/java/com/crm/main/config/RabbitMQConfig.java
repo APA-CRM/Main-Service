@@ -68,6 +68,20 @@ public class RabbitMQConfig extends BaseRabbitMQConfig {
     }
 
     @Bean
+    public Queue taskReminderQueue() {
+        return QueueBuilder
+                .durable(REMIND_ABOUT_TASK_QUEUE)
+                .build();
+    }
+
+    @Bean
+    public Binding remindAboutTaskBinding() {
+        return BindingBuilder.bind(taskReminderQueue())
+                .to(mainServiceTopicExchanger())
+                .with(TASK_REMINDER_ROUTING_KEY);
+    }
+
+    @Bean
     public Binding createOrgRootDirBinding() {
         return BindingBuilder
                 .bind(createRootDirQueue())

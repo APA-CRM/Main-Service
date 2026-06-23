@@ -11,10 +11,13 @@ import com.crm.main.service.OrganizationService;
 import com.crm.main.service.TaskPriorityService;
 import com.crm.main.service.TaskService;
 import com.crm.main.service.TaskStatusService;
+import com.crm.main.service.jobs.requests.TaskReminderJobRequest;
 import com.crm.main.service.task.updater.TaskStatusUpdater;
 import com.crm.main.service.task.updater.TaskStatusUpdaterFactory;
 import com.crm.sharedlib.messaging.service.MessagingService;
 import lombok.RequiredArgsConstructor;
+import org.jobrunr.jobs.JobId;
+import org.jobrunr.scheduling.BackgroundJobRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.crm.main.enums.UserMessage.TASK_HAS_BEEN_ASSIGNED;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +66,8 @@ public class TaskProcessorService {
 
         Task savedTask = taskService.saveTask(task);
 
+        createOrUpdateTaskReminder(task, request);
+
         if (!Objects.equals(task.getAssignedTo(), userId)) {
             sendMessageAboutAssignedTask(task, task.getAssignedTo());
         }
@@ -88,6 +95,8 @@ public class TaskProcessorService {
 
         }
 
+        createOrUpdateTaskReminder(task, request);
+
         task = taskMapper.updateTask(task, request);
 
         // Do not duplicate message about task's assigment
@@ -101,7 +110,34 @@ public class TaskProcessorService {
 
     @Transactional
     public void deleteTask(UUID taskId) {
-        taskService.deleteTask(taskId);
+        Task task = taskService.getTaskOrThrowException(taskId);
+        if (nonNull(task.getReminderJobId())) {
+            BackgroundJobRequest.delete(task.getReminderJobId());
+        }
+
+        taskService.deleteTask(task);
+    }
+
+    private void createOrUpdateTaskReminder(Task task, TaskRequest request) {
+        if (isNull(request.getReminderAt())) {
+            task.setReminderAt(null);
+            if (nonNull(task.getReminderJobId())) {
+                BackgroundJobRequest.delete(task.getReminderJobId());
+            }
+            task.setReminderJobId(null);
+            task.setIsReminded(false);
+
+            return;
+        }
+
+        if (nonNull(task.getReminderJobId())) {
+            BackgroundJobRequest.delete(task.getReminderJobId());
+        }
+
+        JobId jobId = BackgroundJobRequest.schedule(request.getReminderAt(), new TaskReminderJobRequest(task.getId()));
+
+        task.setReminderJobId(jobId.asUUID());
+        task.setIsReminded(false);
     }
 
     private void sendMessageAboutAssignedTask(Task task, Long userId) {

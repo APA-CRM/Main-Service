@@ -53,8 +53,11 @@ public class Task {
 
     private Instant dueDate;
 
-    // TODO: Provide logic of reminding about a task
     private Instant reminderAt;
+
+    private Boolean isReminded = false;
+
+    private UUID reminderJobId;
 
     private Instant completedAt;
 

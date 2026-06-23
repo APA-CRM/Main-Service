@@ -28,9 +28,7 @@ public class TaskService {
     }
 
     @Transactional
-    public void deleteTask(UUID id) {
-        Task task = getTaskOrThrowException(id);
-
+    public void deleteTask(Task task) {
         repository.delete(task);
     }
 
