@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-jammy AS builder
+FROM eclipse-temurin:25-jdk-jammy AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY  .mvn .mvn
 
 RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package
 
-FROM eclipse-temurin:21-jre-jammy AS runner
+FROM eclipse-temurin:25-jre-jammy AS runner
 
 WORKDIR /app
 
