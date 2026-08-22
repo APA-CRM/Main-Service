@@ -97,7 +97,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                     }
                 """;
 
-        RestResponsePage response = objectMapper.readValue(responseString, RestResponsePage.class);
+        RestResponsePage response = jsonMapper.readValue(responseString, RestResponsePage.class);
         Mockito.when(authClient.filterUsers(Mockito.any()))
                 .thenReturn(response);
 
@@ -138,7 +138,7 @@ class OrganizationUsersControllerTest extends BaseIntegrationTest {
                     }
                 """;
 
-        RestResponsePage response = objectMapper.readValue(responseString, RestResponsePage.class);
+        RestResponsePage response = jsonMapper.readValue(responseString, RestResponsePage.class);
         Mockito.when(authClient.filterUsers(Mockito.any()))
                 .thenReturn(response);
 

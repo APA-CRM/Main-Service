@@ -2,7 +2,7 @@ package com.crm.main;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.rabbitmq.RabbitMQContainer;
 
 public abstract class BaseIntegrationTestWithRabbitMQ extends BaseIntegrationTest {
 

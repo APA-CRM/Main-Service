@@ -1,19 +1,19 @@
 package com.crm.main;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import jakarta.annotation.PostConstruct;
 import org.jobrunr.jobs.mappers.JobMapper;
 import org.jobrunr.storage.StorageProvider;
 import org.jobrunr.storage.sql.h2.H2StorageProvider;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import tools.jackson.databind.json.JsonMapper;
 
 import javax.sql.DataSource;
 
@@ -23,7 +23,9 @@ import javax.sql.DataSource;
 @Import(BaseIntegrationTest.Configuration.class)
 public abstract class BaseIntegrationTest {
 
-    protected final ObjectMapper objectMapper = new ObjectMapper();
+    protected final JsonMapper jsonMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .build();
 
     @LocalServerPort
     private int localServerPort;
@@ -31,10 +33,9 @@ public abstract class BaseIntegrationTest {
     @PostConstruct
     public void init() {
         RestAssured.port = localServerPort;
-        objectMapper.findAndRegisterModules();
     }
 
-    @TestConfiguration
+    @ContextConfiguration
     public static class Configuration {
 
         @Bean
