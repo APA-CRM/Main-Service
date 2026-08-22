@@ -67,9 +67,9 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                         "name": "Admin",
                         "accessControls": [
                             {
-                                "resource": "All",
+                                "resource": "ALL",
                                 "actions": [
-                                    "All"
+                                    "ALL"
                                 ]
                             }
                         ],
@@ -78,7 +78,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                     }
                 """;
 
-        RoleResponse response = objectMapper.readValue(responseString, RoleResponse.class);
+        RoleResponse response = jsonMapper.readValue(responseString, RoleResponse.class);
 
         Mockito.when(authClient.getRole(Mockito.any()))
                 .thenReturn(Collections.singletonList(response));
@@ -96,7 +96,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("[0].id", is(response.getId().intValue()))
                 .body("[0].name", is(response.getName()))
-                .body("[0].accessControls[0].resource", is(response.getAccessControls().getFirst().getResource().getName()));
+                .body("[0].accessControls[0].resource", is(response.getAccessControls().getFirst().getResource().name()));
 
     }
 
@@ -126,15 +126,15 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                     "name": "Admin",
                     "accessControls": [
                         {
-                            "resource": "Users",
+                            "resource": "USERS",
                             "actions": [
-                                "All"
+                                "ALL"
                             ]
                         },
                         {
-                            "resource": "Organizations",
+                            "resource": "ORGANIZATIONS",
                             "actions": [
-                                "All"
+                                "ALL"
                             ]
                         }
                     ],
@@ -143,7 +143,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 }
                 """;
 
-        RoleResponse roleResponse = objectMapper.readValue(responseString, RoleResponse.class);
+        RoleResponse roleResponse = jsonMapper.readValue(responseString, RoleResponse.class);
 
         Mockito.when(authClient.createRole(Mockito.any()))
                 .thenReturn(roleResponse);
@@ -163,8 +163,8 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 .body("id", notNullValue())
                 .body("name", is("Admin"))
                 .body("accessControls", hasItems(
-                        hasEntry("resource", Resource.USERS.getName()),
-                        hasEntry("resource", Resource.ORGANIZATIONS.getName())
+                        hasEntry("resource", Resource.USERS.name()),
+                        hasEntry("resource", Resource.ORGANIZATIONS.name())
                 ))
                 .body("createdAt", notNullValue())
                 .body("updateAt", notNullValue());
@@ -206,7 +206,7 @@ class OrganizationRolesControllerTest extends BaseIntegrationTest {
                 }
                 """;
 
-        RestResponsePage response = objectMapper.readValue(responseString, RestResponsePage.class);
+        RestResponsePage response = jsonMapper.readValue(responseString, RestResponsePage.class);
 
         Mockito.when(authClient.filterRoles(Mockito.any()))
                 .thenReturn(response);
